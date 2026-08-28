@@ -66,23 +66,35 @@
 #     }
 
 
+# from fastapi import FastAPI  
+# from pydantic import BaseModel
+# app  = FastAPI   ()
+
+# class Student ( BaseModel) : 
+#     name : str  
+#     math : int
+#     science:int
+#     english : int  
+
+
+# @app.post ("/students")
+# def show_students  (student:Student) : 
+#     Total = student.math + student.english + student.science 
+#     return { 
+#         "name" : student.name , 
+#         "total": Total,
+#         "average" :  Total/3
+#     }
+
+
 from fastapi import FastAPI  
-from pydantic import BaseModel
-app  = FastAPI   ()
+app  = FastAPI()
 
-class Student ( BaseModel) : 
-    name : str  
-    math : int
-    science:int
-    english : int  
-
-
-@app.post ("/students")
-def show_students  (student:Student) : 
-    Total = student.math + student.english + student.science 
+@app.get("/products")
+def mobile_details (category:str, min_price:int): 
     return { 
-        "name" : student.name , 
-        "total": Total,
-        "average" :  Total/3
+        "category" : category   , 
+        "min_price" : min_price
     }
+
 
