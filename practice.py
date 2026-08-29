@@ -87,14 +87,25 @@
 #     }
 
 
+# from fastapi import FastAPI  
+# app  = FastAPI()
+
+# @app.get("/products")
+# def mobile_details (category:str, min_price:int): 
+#     return { 
+#         "category" : category   , 
+#         "min_price" : min_price
+#     }
+
+
+
+
 from fastapi import FastAPI  
-app  = FastAPI()
+app = FastAPI()
 
-@app.get("/products")
-def mobile_details (category:str, min_price:int): 
+@app.get("/employess/{employee_id}")
+def show_employee(employee_id:int,department : str) : 
     return { 
-        "category" : category   , 
-        "min_price" : min_price
+        "employee_id" : employee_id , 
+        "department":department
     }
-
-
