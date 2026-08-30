@@ -273,6 +273,25 @@
 #     }
 
 
+# from fastapi import FastAPI  
+# from typing import Optional
+# app  = FastAPI()
+
+# products = [
+#     {"id": 1, "name": "Laptop", "category": "Electronic", "price": 80000},
+#     {"id": 2, "name": "Samsung", "category": "Mobile", "price": 50000},
+#     {"id": 3, "name": "iPhone", "category": "Mobile", "price": 120000}
+# ]
+
+# @app.get("/products")
+# def get_byCat (category:Optional[str] | None = None) : 
+#     if category : 
+#         filtered_cate  = [c for c in products if c["category"].lower() == category.lower()]
+#         return filtered_cate  
+#     return products
+
+
+
 from fastapi import FastAPI  
 from typing import Optional
 app  = FastAPI()
@@ -283,9 +302,17 @@ products = [
     {"id": 3, "name": "iPhone", "category": "Mobile", "price": 120000}
 ]
 
+@app.get("/products/{product_id}")
+def get_product(product_id:int ) : 
+    for jin  in products : 
+        if jin["id"] == product_id : 
+            return jin   
+    return {"error" : "Product not found"}
+
+
 @app.get("/products")
-def get_byCat (category:Optional[str] | None = None) : 
+def get_queerry (category:Optional[str] |None =None): 
     if category : 
-        filtered_cate  = [c for c in products if c["category"].lower() == category.lower()]
-        return filtered_cate  
+        filtered_category  = [c for c in products if c["category"].lower() == category.lower()]
+        return filtered_category
     return products
