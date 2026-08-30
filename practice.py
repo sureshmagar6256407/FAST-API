@@ -161,55 +161,74 @@
 
 
 
-from typing import Optional
-from fastapi import FastAPI  
-from pydantic import BaseModel
-app = FastAPI()
+# from typing import Optional
+# from fastapi import FastAPI  
+# from pydantic import BaseModel
+# app = FastAPI()
 
-class Product_details(BaseModel) : 
-    name :str  
-    category:str  
-    price:float  
-    stock :int
-    id:int
+# class Product_details(BaseModel) : 
+#     name :str  
+#     category:str  
+#     price:float  
+#     stock :int
+#     id:int
 
-available_product =  [ 
-    {"id":1, "name":"Samsung Mobile" , "category":"Mobile", "price":55550 , "stock":10} , 
-    {"id":2, "name":"Charger" , "category":"Electronic", "price":1000, "stock":50}, 
-    {"id":3, "name":"Fan" , "category":"Electronic", "price":10000 , "stock":33}
+# available_product =  [ 
+#     {"id":1, "name":"Samsung Mobile" , "category":"Mobile", "price":55550 , "stock":10} , 
+#     {"id":2, "name":"Charger" , "category":"Electronic", "price":1000, "stock":50}, 
+#     {"id":3, "name":"Fan" , "category":"Electronic", "price":10000 , "stock":33}
 
-]
+# ]
 
 
-@app.get("/products")
-def get_products(category:Optional[str] =None) : 
-    if category : 
-            filtered_product  = [i  for i in available_product   if i["category"].lower() == category.lower()]
-            return filtered_product   
-    return  { 
-        "details" :available_product
-    }
+# @app.get("/products")
+# def get_products(category:Optional[str] =None) : 
+#     if category : 
+#             filtered_product  = [i  for i in available_product   if i["category"].lower() == category.lower()]
+#             return filtered_product   
+#     return  { 
+#         "details" :available_product
+#     }
     
 
-@app.get("/products/{product_id}")
-def path_para (product_id :int) : 
-    for pro in available_product : 
-        if pro["id"] == product_id : 
-            return pro  
+# @app.get("/products/{product_id}")
+# def path_para (product_id :int) : 
+#     for pro in available_product : 
+#         if pro["id"] == product_id : 
+#             return pro  
         
-    raise ValueError ("student not found ")
+#     raise ValueError ("student not found ")
 
 
     
 
 
-@app.post("/products")
-def add_products(product: Product_details):
-    new_id = len(available_product) + 1
-    product_data = product.model_dump()
-    product_data["id"] = new_id
-    available_product.append(product_data)
-    return {
-        "message": "product added successfully",
-        "data": product_data,
-    }
+# @app.post("/products")
+# def add_products(product: Product_details):
+#     new_id = len(available_product) + 1
+#     product_data = product.model_dump()
+#     product_data["id"] = new_id
+#     available_product.append(product_data)
+#     return {
+#         "message": "product added successfully",
+#         "data": product_data,
+#     }
+
+
+from fastapi import FastAPI    
+from typing import Optional
+
+app  = FastAPI()
+
+
+students = [
+    {"id": 1, "name": "Ram", "city": "Kathmandu"},
+    {"id": 2, "name": "Sita", "city": "Butwal"},
+    {"id": 3, "name": "Hari", "city": "Kathmandu"}
+]
+@app.get("/students") 
+def get_city_by  (city:Optional[str] |None =None):    
+    if city : 
+        filtered_city  = [c for c in students if c["city"].lower() == city.lower()]
+        return filtered_city  
+    return {"message" : "not city found here"}
