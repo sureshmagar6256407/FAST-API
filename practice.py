@@ -161,7 +161,7 @@
 
 
 
-from itertools import product
+from typing import Optional
 from fastapi import FastAPI  
 from pydantic import BaseModel
 app = FastAPI()
@@ -171,6 +171,7 @@ class Product_details(BaseModel) :
     category:str  
     price:float  
     stock :int
+    id:int
 
 available_product =  [ 
     {"id":1, "name":"Samsung Mobile" , "category":"Mobile", "price":55550 , "stock":10} , 
@@ -181,7 +182,10 @@ available_product =  [
 
 
 @app.get("/products")
-def get_products() : 
+def get_products(category:Optional[str] =None) : 
+    if category : 
+            filtered_product  = [i  for i in available_product   if i["category"].lower() == category.lower()]
+            return filtered_product   
     return  { 
         "details" :available_product
     }
@@ -189,12 +193,23 @@ def get_products() :
 
 @app.get("/products/{product_id}")
 def path_para (product_id :int) : 
-    pass 
+    for pro in available_product : 
+        if pro["id"] == product_id : 
+            return pro  
+        
+    raise ValueError ("student not found ")
 
-@app.get("/products")
-def querry_para (category:int) : 
-    pass 
+
+    
+
 
 @app.post("/products")
-def add_products () : 
-    pass
+def add_products(product: Product_details):
+    new_id = len(available_product) + 1
+    product_data = product.model_dump()
+    product_data["id"] = new_id
+    available_product.append(product_data)
+    return {
+        "message": "product added successfully",
+        "data": product_data,
+    }
