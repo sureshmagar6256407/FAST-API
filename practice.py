@@ -215,20 +215,38 @@
 #     }
 
 
-from fastapi import FastAPI    
-from typing import Optional
+# from fastapi import FastAPI    
+# from typing import Optional
 
-app  = FastAPI()
+# app  = FastAPI()
 
+
+# students = [
+#     {"id": 1, "name": "Ram", "city": "Kathmandu"},
+#     {"id": 2, "name": "Sita", "city": "Butwal"},
+#     {"id": 3, "name": "Hari", "city": "Kathmandu"}
+# ]
+# @app.get("/students") 
+# def get_city_by  (city:Optional[str] |None =None):    
+#     if city : 
+#         filtered_city  = [c for c in students if c["city"].lower() == city.lower()]
+#         return filtered_city  
+#     return students
+
+
+
+from fastapi import FastAPI  
+app =FastAPI()
 
 students = [
     {"id": 1, "name": "Ram", "city": "Kathmandu"},
     {"id": 2, "name": "Sita", "city": "Butwal"},
     {"id": 3, "name": "Hari", "city": "Kathmandu"}
 ]
-@app.get("/students") 
-def get_city_by  (city:Optional[str] |None =None):    
-    if city : 
-        filtered_city  = [c for c in students if c["city"].lower() == city.lower()]
-        return filtered_city  
-    return {"message" : "not city found here"}
+
+@app.get("/students/{student_id}")
+def get_byId  (student_id:int) : 
+    for id in students : 
+        if id["id"] == student_id  : 
+            return id  
+    return {"message":"student not found"}
