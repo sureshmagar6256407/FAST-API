@@ -235,18 +235,40 @@
 
 
 
-from fastapi import FastAPI  
-app =FastAPI()
+# from fastapi import FastAPI  
+# app =FastAPI()
 
-students = [
-    {"id": 1, "name": "Ram", "city": "Kathmandu"},
-    {"id": 2, "name": "Sita", "city": "Butwal"},
-    {"id": 3, "name": "Hari", "city": "Kathmandu"}
-]
+# students = [
+#     {"id": 1, "name": "Ram", "city": "Kathmandu"},
+#     {"id": 2, "name": "Sita", "city": "Butwal"},
+#     {"id": 3, "name": "Hari", "city": "Kathmandu"}
+# ]
 
-@app.get("/students/{student_id}")
-def get_byId  (student_id:int) : 
-    for id in students : 
-        if id["id"] == student_id  : 
-            return id  
-    return {"message":"student not found"}
+# @app.get("/students/{student_id}")
+# def get_byId  (student_id:int) : 
+#     for id in students : 
+#         if id["id"] == student_id  : 
+#             return id  
+#     return {"message":"student not found"}
+
+
+from fastapi import FastAPI 
+from pydantic import BaseModel
+app  = FastAPI ()
+
+class StudentDetails(BaseModel) : 
+    name:str
+    age:int  
+    city:str  
+
+students = []
+
+@app.post("/students")  
+def create_student  (student:StudentDetails) : 
+    new_student = student.model_dump()   
+    students.append(new_student)   
+    return { 
+        "message":"student added successfully" , 
+        "data" : new_student
+    }
+
