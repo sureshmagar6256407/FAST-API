@@ -292,27 +292,72 @@
 
 
 
-from fastapi import FastAPI  
-from typing import Optional
+# from fastapi import FastAPI  
+# from typing import Optional
+# app  = FastAPI()
+
+# products = [
+#     {"id": 1, "name": "Laptop", "category": "Electronic", "price": 80000},
+#     {"id": 2, "name": "Samsung", "category": "Mobile", "price": 50000},
+#     {"id": 3, "name": "iPhone", "category": "Mobile", "price": 120000}
+# ]
+
+# @app.get("/products/{product_id}")
+# def get_product(product_id:int ) : 
+#     for jin  in products : 
+#         if jin["id"] == product_id : 
+#             return jin   
+#     return {"error" : "Product not found"}
+
+
+# @app.get("/products")
+# def get_queerry (category:Optional[str] |None =None): 
+#     if category : 
+#         filtered_category  = [c for c in products if c["category"].lower() == category.lower()]
+#         return filtered_category
+#     return products
+
+
+
+from fastapi import FastAPI 
+from pydantic import BaseModel  
+from typing import Optional 
+
 app  = FastAPI()
 
-products = [
-    {"id": 1, "name": "Laptop", "category": "Electronic", "price": 80000},
-    {"id": 2, "name": "Samsung", "category": "Mobile", "price": 50000},
-    {"id": 3, "name": "iPhone", "category": "Mobile", "price": 120000}
+class CreateEmployees(BaseModel):     
+    name:str  
+    department:str 
+    salary:float
+
+employees = [
+    {"id": 1, "name": "Ram", "department": "IT", "salary": 50000},
+    {"id": 2, "name": "Sita", "department": "HR", "salary": 45000},
+    {"id": 3, "name": "Hari", "department": "IT", "salary": 60000}
 ]
 
-@app.get("/products/{product_id}")
-def get_product(product_id:int ) : 
-    for jin  in products : 
-        if jin["id"] == product_id : 
-            return jin   
-    return {"error" : "Product not found"}
+@app.get("/employees")
+def get_byQu   (department:Optional[str] |None =None) : 
+    if not department : 
+        return employees 
 
+    filtered_dep  = [de for de in employees if department.lower() == de["department"].lower()]
+    return filtered_dep
 
-@app.get("/products")
-def get_queerry (category:Optional[str] |None =None): 
-    if category : 
-        filtered_category  = [c for c in products if c["category"].lower() == category.lower()]
-        return filtered_category
-    return products
+@app.get("/employees/{employee_id}")
+def get_bypath   (employee_id :int) : 
+    for i  in employees : 
+        if i["id"]  == employee_id : 
+            return i 
+    return {"message" : "no employee id has in"}
+
+@app.post("/employees")
+def create_employee(employee:CreateEmployees) : 
+    new_id  = len(employees) + 1  
+    new_emplyee = employee.model_dump ()
+    new_emplyee["id"]  = new_id  
+    employees.append(new_emplyee)
+    return { 
+        "status" : "the student added"  ,
+        "data" : new_emplyee
+    }
