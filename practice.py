@@ -252,23 +252,40 @@
 #     return {"message":"student not found"}
 
 
-from fastapi import FastAPI 
-from pydantic import BaseModel
-app  = FastAPI ()
+# from fastapi import FastAPI 
+# from pydantic import BaseModel
+# app  = FastAPI ()
 
-class StudentDetails(BaseModel) : 
-    name:str
-    age:int  
-    city:str  
+# class StudentDetails(BaseModel) : 
+#     name:str
+#     age:int  
+#     city:str  
 
-students = []
+# students = []
 
-@app.post("/students")  
-def create_student  (student:StudentDetails) : 
-    new_student = student.model_dump()   
-    students.append(new_student)   
-    return { 
-        "message":"student added successfully" , 
-        "data" : new_student
-    }
+# @app.post("/students")  
+# def create_student  (student:StudentDetails) : 
+#     new_student = student.model_dump()   
+#     students.append(new_student)   
+#     return { 
+#         "message":"student added successfully" , 
+#         "data" : new_student
+#     }
 
+
+from fastapi import FastAPI  
+from typing import Optional
+app  = FastAPI()
+
+products = [
+    {"id": 1, "name": "Laptop", "category": "Electronic", "price": 80000},
+    {"id": 2, "name": "Samsung", "category": "Mobile", "price": 50000},
+    {"id": 3, "name": "iPhone", "category": "Mobile", "price": 120000}
+]
+
+@app.get("/products")
+def get_byCat (category:Optional[str] | None = None) : 
+    if category : 
+        filtered_cate  = [c for c in products if c["category"].lower() == category.lower()]
+        return filtered_cate  
+    return products
