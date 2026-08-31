@@ -366,8 +366,14 @@
 
 from fastapi import FastAPI  
 from typing import Optional
+from pydantic import BaseModel
 app  = FastAPI ( )
 
+class  AddFood(BaseModel) : 
+    name : str  
+    category:str  
+    price: int  
+    available :bool  
 
 foods = [
     {
@@ -410,6 +416,9 @@ def get_food(category :Optional[str] |None = None) :
     return filtered_category   
 
 
+@app.get("/foods/available")
+def get_available () : 
+    return [food for food in foods if food.get("available")]
 
 @app.get("/foods/{food_id}")
 def get_foodBy_id (food_id:int) : 
@@ -417,3 +426,12 @@ def get_foodBy_id (food_id:int) :
         if i["id"] == food_id : 
             return i
     return {"message":"Food not found"}
+
+
+@app.post("/foods")
+def add_new_food(food:AddFood) : 
+    food_id = len(foods)+1   
+    new_food   = food.model_dump()
+    new_food["id"] = food_id  
+    foods.append (new_food)
+    return new_food
