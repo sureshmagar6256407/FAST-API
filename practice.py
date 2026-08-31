@@ -408,13 +408,13 @@ foods = [
 
 
 @app.get("/foods")
-def get_food(category :Optional[str] |None = None) : 
-    if not category : 
-        return foods  
+def get_food(category :Optional[str] = None ,available:Optional[bool] = None) : 
+    if category   : 
+        filtered_foods = [f for f in foods if f["category"].lower() == category.lower()]   
 
-    filtered_category  = [f for f in foods if f["category"].lower() == category.lower()]
-    return filtered_category   
-
+    if available is not None : 
+        filtered_foods  = [f for f in filtered_foods if f["available"] == available]
+    return filtered_foods
 
 @app.get("/foods/available")
 def get_available () : 
