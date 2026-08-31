@@ -408,3 +408,12 @@ def get_food(category :Optional[str] |None = None) :
 
     filtered_category  = [f for f in foods if f["category"].lower() == category.lower()]
     return filtered_category   
+
+
+
+@app.get("/foods/{food_id}")
+def get_foodBy_id (food_id:int) : 
+    for i in foods : 
+        if i["id"] == food_id : 
+            return i
+    return {"message":"Food not found"}
