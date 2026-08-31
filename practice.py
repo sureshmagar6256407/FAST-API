@@ -319,45 +319,82 @@
 
 
 
-from fastapi import FastAPI 
-from pydantic import BaseModel  
-from typing import Optional 
+# from fastapi import FastAPI 
+# from pydantic import BaseModel  
+# from typing import Optional 
 
-app  = FastAPI()
+# app  = FastAPI()
 
-class CreateEmployees(BaseModel):     
-    name:str  
-    department:str 
-    salary:float
+# class CreateEmployees(BaseModel):     
+#     name:str  
+#     department:str 
+#     salary:float
 
-employees = [
-    {"id": 1, "name": "Ram", "department": "IT", "salary": 50000},
-    {"id": 2, "name": "Sita", "department": "HR", "salary": 45000},
-    {"id": 3, "name": "Hari", "department": "IT", "salary": 60000}
-]
+# employees = [
+#     {"id": 1, "name": "Ram", "department": "IT", "salary": 50000},
+#     {"id": 2, "name": "Sita", "department": "HR", "salary": 45000},
+#     {"id": 3, "name": "Hari", "department": "IT", "salary": 60000}
+# ]
 
-@app.get("/employees")
-def get_byQu   (department:Optional[str] |None =None) : 
-    if not department : 
-        return employees 
+# @app.get("/employees")
+# def get_byQu   (department:Optional[str] |None =None) : 
+#     if not department : 
+#         return employees 
 
-    filtered_dep  = [de for de in employees if department.lower() == de["department"].lower()]
-    return filtered_dep
+#     filtered_dep  = [de for de in employees if department.lower() == de["department"].lower()]
+#     return filtered_dep
 
-@app.get("/employees/{employee_id}")
-def get_bypath   (employee_id :int) : 
-    for i  in employees : 
-        if i["id"]  == employee_id : 
-            return i 
-    return {"message" : "no employee id has in"}
+# @app.get("/employees/{employee_id}")
+# def get_bypath   (employee_id :int) : 
+#     for i  in employees : 
+#         if i["id"]  == employee_id : 
+#             return i 
+#     return {"message" : "no employee id has in"}
 
-@app.post("/employees")
-def create_employee(employee:CreateEmployees) : 
-    new_id  = len(employees) + 1  
-    new_emplyee = employee.model_dump ()
-    new_emplyee["id"]  = new_id  
-    employees.append(new_emplyee)
-    return { 
-        "status" : "the student added"  ,
-        "data" : new_emplyee
+# @app.post("/employees")
+# def create_employee(employee:CreateEmployees) : 
+#     new_id  = len(employees) + 1  
+#     new_emplyee = employee.model_dump ()
+#     new_emplyee["id"]  = new_id  
+#     employees.append(new_emplyee)
+#     return { 
+#         "status" : "the student added"  ,
+#         "data" : new_emplyee
+#     }
+
+
+
+from fastapi import FastAPI  
+app  = FastAPI ( )
+
+
+foods = [
+    {
+        "id": 1,
+        "name": "Chicken Momo",
+        "category": "Momo",
+        "price": 180,
+        "available": True
+    },
+    {
+        "id": 2,
+        "name": "Veg Chowmein",
+        "category": "Chowmein",
+        "price": 150,
+        "available": True
+    },
+    {
+        "id": 3,
+        "name": "Pizza",
+        "category": "Pizza",
+        "price": 450,
+        "available": False
+    },
+    {
+        "id": 4,
+        "name": "Buff Momo",
+        "category": "Momo",
+        "price": 200,
+        "available": True
     }
+]
