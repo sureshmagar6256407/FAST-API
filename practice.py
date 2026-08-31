@@ -365,6 +365,7 @@
 
 
 from fastapi import FastAPI  
+from typing import Optional
 app  = FastAPI ( )
 
 
@@ -398,3 +399,12 @@ foods = [
         "available": True
     }
 ]
+
+
+@app.get("/foods")
+def get_food(category :Optional[str] |None = None) : 
+    if not category : 
+        return foods  
+
+    filtered_category  = [f for f in foods if f["category"].lower() == category.lower()]
+    return filtered_category   
