@@ -448,10 +448,17 @@ def add_new_food(food:AddFood) :
 
 
 from fastapi  import FastAPI  
-from typing import Optional  
+from typing import Optional    
+from pydantic import BaseModel
 
 
 app  = FastAPI ()
+
+class Patient(BaseModel) : 
+    name : str 
+    age : int 
+    department : str  
+    admitted: bool 
 
 patients = [
     {
@@ -514,4 +521,10 @@ def get_patient_by_id (patient_id : Optional[int] = None) :
      }
 
 
-
+@app.post("/patients")   
+def add_patient (patient:Patient) : 
+    new_id = len(patients) + 1    
+    new_patient  = patient.model_dump()
+    new_patient["id"]  = new_id  
+    patients.append(new_patient)
+    return  new_patient  
