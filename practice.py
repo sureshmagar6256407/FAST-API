@@ -364,6 +364,8 @@
 
 
 
+
+'''
 from fastapi import FastAPI  
 from typing import Optional
 from pydantic import BaseModel
@@ -409,11 +411,17 @@ foods = [
 
 @app.get("/foods")
 def get_food(category :Optional[str] = None ,available:Optional[bool] = None) : 
-    if category   : 
-        filtered_foods = [f for f in foods if f["category"].lower() == category.lower()]   
-
-    if available is not None : 
-        filtered_foods  = [f for f in filtered_foods if f["available"] == available]
+    filtered_foods  = foods  
+    if category : 
+        filtered_foods = [ 
+            f for f in filtered_foods  
+            if f["category"].lower() ==category.lower()
+        ]
+    if  available is not None  :  
+        filtered_foods   = [ 
+            f for f in filtered_foods  
+            if f.get("available") == available
+        ]
     return filtered_foods
 
 @app.get("/foods/available")
@@ -435,3 +443,61 @@ def add_new_food(food:AddFood) :
     new_food["id"] = food_id  
     foods.append (new_food)
     return new_food
+'''
+
+
+
+from fastapi  import FastAPI  
+from typing import Optional  
+
+
+app  = FastAPI ()
+
+patients = [
+    {
+        "id": 1,
+        "name": "Ram",
+        "age": 25,
+        "department": "Cardiology",
+        "admitted": True
+    },
+    {
+        "id": 2,
+        "name": "Sita",
+        "age": 32,
+        "department": "Neurology",
+        "admitted": False
+    },
+    {
+        "id": 3,
+        "name": "Hari",
+        "age": 45,
+        "department": "Cardiology",
+        "admitted": True
+    },
+    {
+        "id": 4,
+        "name": "Gita",
+        "age": 29,
+        "department": "Orthopedic",
+        "admitted": True
+    }
+]
+
+
+@app.get("/patients")
+def get_patients(department: Optional[str] =None,  admitted:Optional[bool] =None) : 
+    filtered_patients = patients   
+    if department : 
+        filtered_patients = [  
+            p for p in filtered_patients   
+            if p["department"].lower()   == department.lower()   
+        ]
+
+    if admitted is not None :
+        filtered_patients  = [  
+            p for p in filtered_patients  
+            if p.get("admitted")  == admitted 
+        ]
+
+    return filtered_patients
