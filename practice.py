@@ -499,5 +499,19 @@ def get_patients(department: Optional[str] =None,  admitted:Optional[bool] =None
             p for p in filtered_patients  
             if p.get("admitted")  == admitted 
         ]
-
     return filtered_patients
+
+
+
+
+@app.get("/patients/{patient_id}")
+def get_patient_by_id (patient_id : Optional[int] = None) : 
+    for i  in patients : 
+        if i["id"]  == patient_id : 
+            return i  
+    return {
+    "message": "Patient not found"
+     }
+
+
+
