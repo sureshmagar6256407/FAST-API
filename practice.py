@@ -543,6 +543,13 @@ from pydantic import BaseModel
 
 app = FastAPI ( )
 
+class Order(BaseModel) : 
+    customer: str   
+    product:str 
+    category :str  
+    price :float  
+    status :str
+
 
 orders = [
     {
@@ -604,6 +611,27 @@ def get_orders(customer :Optional[str] = None, category:Optional[str] = None, st
         ]
     return filtered_orders
 
+
+
+@app.post("/orders")
+def add_order(order:Order) : 
+    new_id  = len(orders) + 1  
+    new_order = order.model_dump()
+    new_order["id"]  = new_id  
+    orders.append(new_order)
+    return  { 
+        "message":"Order created successfully" , 
+        "data"  : new_order
+    }
+
+@app.get("/orders/customer/{customer_name}")
+def get_orders_by_customer(customer_name:str) : 
+    filtered_orders = [ 
+        o for o in orders   
+        if o["customer"].lower() == customer_name.lower()
+    ]
+    return filtered_orders
+
 @app.get("/orders/{order_id}")
 def get_order_by_id (order_id:int) : 
     for i in orders : 
@@ -612,4 +640,5 @@ def get_order_by_id (order_id:int) :
     return   { 
         "message" : "Order not found"
     }
+
 
