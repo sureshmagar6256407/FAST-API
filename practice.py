@@ -583,7 +583,7 @@ orders = [
 
 
 @app.get("/orders")
-def get_orders(customer :str  , category:Optional[str] = None, status:Optional[str] =None) : 
+def get_orders(customer :Optional[str] = None, category:Optional[str] = None, status:Optional[str] =None) : 
     filtered_orders  = orders  
     if customer : 
         filtered_orders  = [  
@@ -603,4 +603,13 @@ def get_orders(customer :str  , category:Optional[str] = None, status:Optional[s
              if o["status"].lower() == status.lower()
         ]
     return filtered_orders
+
+@app.get("/orders/{order_id}")
+def get_order_by_id (order_id:int) : 
+    for i in orders : 
+        if i ["id"] == order_id  : 
+            return i  
+    return   { 
+        "message" : "Order not found"
+    }
 
