@@ -578,3 +578,29 @@ orders = [
         "status": "Cancelled"
     }
 ]
+
+
+
+
+@app.get("/orders")
+def get_orders(customer :str  , category:Optional[str] = None, status:Optional[str] =None) : 
+    filtered_orders  = orders  
+    if customer : 
+        filtered_orders  = [  
+            o for o  in filtered_orders  
+            if o["customer"].lower()  == customer.lower()
+        ]
+
+    if category : 
+        filtered_orders = [  
+            o  for o in filtered_orders  
+            if o["category"].lower() == category.lower()
+        ]
+
+    if status : 
+        filtered_orders=  [ 
+             o for o  in filtered_orders  
+             if o["status"].lower() == status.lower()
+        ]
+    return filtered_orders
+
