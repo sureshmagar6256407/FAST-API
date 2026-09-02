@@ -447,6 +447,9 @@ def add_new_food(food:AddFood) :
 
 
 
+
+
+'''
 from fastapi  import FastAPI  
 from typing import Optional    
 from pydantic import BaseModel
@@ -528,3 +531,50 @@ def add_patient (patient:Patient) :
     new_patient["id"]  = new_id  
     patients.append(new_patient)
     return  new_patient  
+
+'''
+
+
+
+from fastapi import FastAPI  
+from typing import Optional  
+from pydantic import BaseModel  
+
+
+app = FastAPI ( )
+
+
+orders = [
+    {
+        "id": 1,
+        "customer": "Ram",
+        "product": "Laptop",
+        "category": "Electronics",
+        "price": 80000,
+        "status": "Delivered"
+    },
+    {
+        "id": 2,
+        "customer": "Sita",
+        "product": "Shoes",
+        "category": "Fashion",
+        "price": 5000,
+        "status": "Pending"
+    },
+    {
+        "id": 3,
+        "customer": "Hari",
+        "product": "Mobile",
+        "category": "Electronics",
+        "price": 50000,
+        "status": "Delivered"
+    },
+    {
+        "id": 4,
+        "customer": "Gita",
+        "product": "Bag",
+        "category": "Fashion",
+        "price": 3000,
+        "status": "Cancelled"
+    }
+]
