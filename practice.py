@@ -645,3 +645,19 @@ def get_order_by_id (order_id:int) :
 
 '''
 
+
+
+
+from fastapi import FastAPI  
+from typing import Optional  
+from pydantic import BaseModel  
+
+app  = FastAPI()
+
+books = [
+    {"id": 1, "title": "Python Basics", "author": "Ram", "category": "Programming", "available": True},
+    {"id": 2, "title": "Data Science", "author": "Sita", "category": "Programming", "available": False},
+    {"id": 3, "title": "English Grammar", "author": "Hari", "category": "Education", "available": True},
+    {"id": 4, "title": "Machine Learning", "author": "Ram", "category": "Programming", "available": True}
+]
+
