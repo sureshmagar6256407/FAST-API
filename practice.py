@@ -536,6 +536,8 @@ def add_patient (patient:Patient) :
 
 
 
+
+'''
 from fastapi import FastAPI  
 from typing import Optional  
 from pydantic import BaseModel  
@@ -641,4 +643,5 @@ def get_order_by_id (order_id:int) :
         "message" : "Order not found"
     }
 
+'''
 
