@@ -648,16 +648,83 @@ def get_order_by_id (order_id:int) :
 
 
 
-from fastapi import FastAPI  
+from fastapi import FastAPI  ,HTTPException
 from typing import Optional  
 from pydantic import BaseModel  
 
 app  = FastAPI()
 
+class CreateBook(BaseModel) : 
+    title:str  
+    author : str   
+    category :str  
+    available:bool
+
 books = [
-    {"id": 1, "title": "Python Basics", "author": "Ram", "category": "Programming", "available": True},
-    {"id": 2, "title": "Data Science", "author": "Sita", "category": "Programming", "available": False},
-    {"id": 3, "title": "English Grammar", "author": "Hari", "category": "Education", "available": True},
-    {"id": 4, "title": "Machine Learning", "author": "Ram", "category": "Programming", "available": True}
+  {"id": 1, "title": "Python Basics", "author": "Ram", "category": "Programming", "available": True},
+  {"id": 2, "title": "Data Science", "author": "Sita", "category": "Programming", "available": False},
+  {"id": 3, "title": "English Grammar", "author": "Hari", "category": "Education", "available": True},
+  {"id": 4, "title": "Machine Learning", "author": "Ram", "category": "Programming", "available": True}
+
 ]
 
+@app.get("/books")   
+def get_books () :   
+    if not books : 
+        return []
+    return books
+
+
+
+@app.get("/books/filter")
+def get_book_byquerry(category: Optional[str] = None, available: Optional[bool] = None): 
+    filtered_books = books  
+
+    if category is not None : 
+        filtered_books = [b for b in filtered_books if b["category"].lower() == category.lower()]
+
+    if available is not None :  
+        filtered_books  = [b for b in filtered_books   if b["available"] == available ]
+
+    if not filtered_books : 
+        raise HTTPException ( 
+            status_code=404 ,  
+            detail= "No books found matching the criteria"
+        )
+
+    return filtered_books
+
+    
+
+@app.get("/books/{book_id}")
+def get_bookby_id (book_id : int ) : 
+    for book in books : 
+        if book["id"]  == book_id : 
+            return book    
+
+    raise HTTPException(status_code=404 , detail="Book not found")
+
+
+
+@app.post("/books")
+def create_new_books(book:CreateBook) : 
+    if book.title.strip() == ""  or book.author.strip() == "" or book.category.strip() == "": 
+        raise HTTPException(
+            status_code=400 , 
+            detail= { 
+                "message1" : "please ensure that the book title  , book category and book author must be provided not white space",
+                "message2" : "please make sure when you write you cannot give the space in first "
+
+            }
+        )
+
+    if books : 
+        new_id   = books[-1]["id"] + 1 
+    else  : 
+        new_id = 1 
+
+    new_book   = book.model_dump()
+    new_book["id"]  = new_id
+    books.append(new_book)
+    return new_book
+    
