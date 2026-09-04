@@ -731,7 +731,7 @@ def create_new_books(book:CreateBook) :
 '''
 
 
-from fastapi import FastAPI  
+from fastapi import FastAPI  ,HTTPException  
 from typing import Optional  
 from pydantic import BaseModel  
 
@@ -743,3 +743,15 @@ accounts = [
     {"id": 3, "name": "Hari", "balance": 0, "account_type": "Saving", "active": False},
     {"id": 4, "name": "Gita", "balance": 80000, "account_type": "Saving", "active": True}
 ]
+
+
+
+
+@app.get("/accounts")
+def get_accounts  () : 
+    if not accounts : 
+        raise HTTPException ( 
+            status_code=404 ,   
+            detail= "Account not Found"
+        )
+    return accounts
