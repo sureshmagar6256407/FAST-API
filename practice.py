@@ -735,7 +735,13 @@ from fastapi import FastAPI  ,HTTPException
 from typing import Optional  
 from pydantic import BaseModel  
 
-app  = FastAPI ( )
+app  = FastAPI ( )  
+
+class SubmitAccount (BaseModel) : 
+    name : str   
+    balance :float  
+    account_type: str   
+    active : bool
 
 accounts = [
     {"id": 1, "name": "Ram", "balance": 50000, "account_type": "Saving", "active": True},
@@ -798,3 +804,26 @@ def get_account_by_id (account_id :int) :
         status_code=404 ,  
         detail="Account not found"
     )
+
+@app.post("/accounts")
+def post_account (account:SubmitAccount) : 
+    if account.name.strip() == "" : 
+        raise HTTPException  ( 
+            status_code=400  , 
+            detail= "please fill the form dont leave white space"
+        )
+    if account.balance  < 0 : 
+        raise HTTPException ( 
+            status_code=400 , 
+            detail="The account balance most be positive number"
+        )
+
+    if accounts : 
+        new_id  = accounts[-1]["id"]+1  
+    else : 
+        new_id =  1 
+
+    new_account = account.model_dump()
+    new_account["id"] = new_id  
+    accounts.append(new_account)
+    return new_account
