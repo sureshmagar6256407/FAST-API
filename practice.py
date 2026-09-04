@@ -755,3 +755,16 @@ def get_accounts  () :
             detail= "Account not Found"
         )
     return accounts
+
+
+
+@app.get("/accounts/{account_id}")
+
+def get_account_by_id (account_id :int) : 
+    for   id in accounts : 
+        if id["id"] == account_id : 
+            return id  
+    raise HTTPException ( 
+        status_code=404 ,  
+        detail="Account not found"
+    )
