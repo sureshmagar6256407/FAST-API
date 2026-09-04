@@ -647,7 +647,7 @@ def get_order_by_id (order_id:int) :
 
 
 
-
+'''
 from fastapi import FastAPI  ,HTTPException
 from typing import Optional  
 from pydantic import BaseModel  
@@ -671,7 +671,7 @@ books = [
 @app.get("/books")   
 def get_books () :   
     if not books : 
-        return []
+        return  {"Not Book found" :[]}
     return books
 
 
@@ -728,3 +728,18 @@ def create_new_books(book:CreateBook) :
     books.append(new_book)
     return new_book
     
+'''
+
+
+from fastapi import FastAPI  
+from typing import Optional  
+from pydantic import BaseModel  
+
+app  = FastAPI ( )
+
+accounts = [
+    {"id": 1, "name": "Ram", "balance": 50000, "account_type": "Saving", "active": True},
+    {"id": 2, "name": "Sita", "balance": 25000, "account_type": "Current", "active": True},
+    {"id": 3, "name": "Hari", "balance": 0, "account_type": "Saving", "active": False},
+    {"id": 4, "name": "Gita", "balance": 80000, "account_type": "Saving", "active": True}
+]
