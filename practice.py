@@ -757,9 +757,39 @@ def get_accounts  () :
     return accounts
 
 
+@app.get("/accounts/filter")  
+def get_account_by_querry (name:Optional[str] =None  , account_type :Optional[str] =None , active:Optional[bool] = None) : 
+    filtered_accounts   =  accounts  
+
+    if name is not None  : 
+        filtered_accounts  = [
+            n for n  in filtered_accounts 
+            if n["name"].lower() == name.lower()
+        ]
+    if account_type is not None : 
+        filtered_accounts  = [
+            at for at in filtered_accounts    
+            if at["account_type"].lower()  == account_type.lower()
+        ]  
+
+    if active is not None    : 
+        filtered_accounts   = [  
+            b for b  in filtered_accounts  
+            if b["active"]  == active
+        ]
+
+    if not filtered_accounts : 
+        raise HTTPException  ( 
+            status_code=404 , 
+            detail="No account found"
+        )
+    
+    return filtered_accounts
+    
+
+
 
 @app.get("/accounts/{account_id}")
-
 def get_account_by_id (account_id :int) : 
     for   id in accounts : 
         if id["id"] == account_id : 
