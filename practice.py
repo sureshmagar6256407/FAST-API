@@ -874,6 +874,26 @@ def get_bookings () :
     return  bookings
 
 
+@app.get("/bookings/filter")
+def get_booking_byQ   (guest:Optional[str] = None , status:Optional[str]  = None)   : 
+    filtered_booking  = bookings
+
+    if guest is not None :  
+        filtered_booking = [ 
+            g for g in filtered_booking   
+            if g["guest"].lower()  == guest.lower()
+        ]
+    if status is not None : 
+        filtered_booking = [  
+            s for s in filtered_booking   
+            if s["status"].lower()  == status.lower()
+        ]
+    if not filtered_booking  :   
+        raise HTTPException  (  
+            status_code= 404 , 
+            detail= "No booking found"
+        )
+    return filtered_booking
 
 
 @app.get("/bookings/{booking_id}")
