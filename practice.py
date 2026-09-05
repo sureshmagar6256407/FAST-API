@@ -872,3 +872,17 @@ def get_bookings () :
             detail= "Book not Found "
         )
     return  bookings
+
+
+
+
+@app.get("/bookings/{booking_id}")
+def get_booking_by_id (booking_id : int)  : 
+    for i  in bookings : 
+        if i["id"]   == booking_id : 
+            return  i    
+
+    raise HTTPException ( 
+        status_code=404 , 
+        detail= "booking id not Found"
+    )
