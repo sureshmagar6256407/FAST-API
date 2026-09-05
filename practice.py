@@ -731,6 +731,8 @@ def create_new_books(book:CreateBook) :
 '''
 
 
+
+'''
 from fastapi import FastAPI  ,HTTPException  
 from typing import Optional  
 from pydantic import BaseModel  
@@ -827,3 +829,36 @@ def post_account (account:SubmitAccount) :
     new_account["id"] = new_id  
     accounts.append(new_account)
     return new_account
+'''
+
+
+from fastapi import FastAPI   
+from typing import Optional  
+from pydantic import BaseModel  
+
+app  = FastAPI()
+
+
+bookings = [
+    {
+        "id": 1,
+        "guest": "Ram",
+        "room": 101,
+        "days": 3,
+        "status": "Booked"
+    },
+    {
+        "id": 2,
+        "guest": "Sita",
+        "room": 102,
+        "days": 2,
+        "status": "Cancelled"
+    },
+    {
+        "id": 3,
+        "guest": "Hari",
+        "room": 103,
+        "days": 5,
+        "status": "Booked"
+    }
+]
