@@ -832,7 +832,7 @@ def post_account (account:SubmitAccount) :
 '''
 
 
-from fastapi import FastAPI   
+from fastapi import FastAPI   ,HTTPException
 from typing import Optional  
 from pydantic import BaseModel  
 
@@ -862,3 +862,13 @@ bookings = [
         "status": "Booked"
     }
 ]
+
+
+@app.get("/bookings")  
+def get_bookings () :    
+    if not bookings : 
+        raise HTTPException  (  
+            status_code= 404  ,  
+            detail= "Book not Found "
+        )
+    return  bookings
