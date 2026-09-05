@@ -837,7 +837,11 @@ from typing import Optional
 from pydantic import BaseModel  
 
 app  = FastAPI()
-
+class CreateBooking(BaseModel ) : 
+    guest : str  
+    room:int      
+    days:int   
+    status : str 
 
 bookings = [
     {
@@ -906,3 +910,33 @@ def get_booking_by_id (booking_id : int)  :
         status_code=404 , 
         detail= "booking id not Found"
     )
+
+@app.post("/bookings")
+def add_bookings (book : CreateBooking) : 
+    if book.guest.strip() == "" : 
+        raise HTTPException ( 
+            status_code=400 , 
+            detail="please fill the blank"
+        )  
+
+    if book.days <= 0 or book.room  <= 0: 
+        raise HTTPException ( 
+            status_code=400 , 
+            detail= "book day most be positive and greater than 0"
+        )
+
+    if book.status != "Booked" and book.status != "Cancelled" : 
+        raise  HTTPException ( 
+            status_code=400 , 
+            detail= "Status must be Booked / Cancelled"
+        )
+
+    if bookings  : 
+        new_id   = bookings[-1]["id"] +1   
+    if not bookings : 
+        new_id  = 1   
+
+    new_booking  = book.model_dump()
+    new_booking["id"]   = new_id  
+    bookings.append(new_booking)
+    return new_booking
