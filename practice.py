@@ -992,4 +992,16 @@ def get_products  ( )  :
             status_code=404 ,  
             detail= "Products not found "
         )
-        
+    return products
+
+
+
+@app.get("/products/{product_id}")   
+def get_products_by_id(product_id :int) : 
+    for i  in products : 
+        if i["id"]  == product_id  : 
+            return i   
+    raise HTTPException (  
+        status_code= 404 ,  
+        detail= f"product id {product_id} not found"
+    )
