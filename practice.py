@@ -995,6 +995,37 @@ def get_products  ( )  :
     return products
 
 
+@app.get("/products/filter")
+def get_product_by_querry (category :Optional [str] = None , max_price:Optional[float] = None , in_stock : Optional[bool] = None ) : 
+    filter_product  = products  
+
+    if category is not None  : 
+        filter_product   = [  
+            c for c in filter_product   
+            if c["category"].lower()  == category.lower()
+        ]
+    if max_price is not None : 
+        filter_product       =  [ 
+            p for p  in filter_product   
+            if p["price"] <= max_price  
+        ]
+    if  in_stock is not None : 
+        if in_stock :  
+            filter_product  = [p for p in filter_product  if p["stock"]  > 0]   
+        else  : 
+            filter_product = [p for  p in filter_product if p["stock"] == 0 ]  
+
+    if not filter_product : 
+        raise HTTPException (  
+            status_code= 404 ,  
+            detail= "No products matched the filter criteria."
+        )
+    return filter_product
+
+
+
+
+
 
 @app.get("/products/{product_id}")   
 def get_products_by_id(product_id :int) : 
