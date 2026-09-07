@@ -951,6 +951,11 @@ from pydantic import BaseModel
 from typing import Optional  
 
 app  = FastAPI()
+class CreateProduct(BaseModel) : 
+    name :str   
+    category :str   
+    price : float  
+    stock :int   
 
 
 products = [
@@ -1036,3 +1041,35 @@ def get_products_by_id(product_id :int) :
         status_code= 404 ,  
         detail= f"product id {product_id} not found"
     )
+
+
+@app.post ("/products")
+
+def post_product (product :CreateProduct) : 
+    if product.name.strip () == "" or product.category.strip () == "" : 
+        raise HTTPException ( 
+            status_code=400 , 
+            detail= "Please Do not leave the blank onf name and category ,"
+        )
+    if product.price <= 0 : 
+        raise HTTPException ( 
+            status_code=400 , 
+            detail= "price must be above 0"
+
+        )
+
+    if product.stock  < 0 : 
+        raise HTTPException  ( 
+            status_code= 400    , 
+            detail= "please ensure thaht stock be positive"
+        )
+    if products : 
+        new_id   = products[-1]["id"]+1 
+    else : 
+        new_id  = 1   
+
+    new_product  = product.model_dump()
+    new_product["id"]  = new_id  
+    products.append(new_product)
+    return new_product
+
