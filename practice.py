@@ -1182,6 +1182,8 @@ class CreateStudent(BaseModel) :
     course : str   
     active :bool 
 
+
+
 students = [
     {
         "id": 1,
@@ -1244,10 +1246,39 @@ def post_student (student : CreateStudent ,) :
 
     if students : 
         new_id  = students[-1]["id"]+1  
-    else : 
+    else :
         new_id  = 1   
 
     new_student  = student.model_dump()
     new_student["id"]  = new_id  
     students.append(new_student)
     return new_student
+
+@app.put("/students/{student_id}")
+def change_data(student_id: int, student_details: CreateStudent):
+    if student_details.name.strip() == "" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Ensure that the  name must be not whitespace"
+        )  
+
+    if  student_details.age <= 0 : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail   = "age must be positive and above the 0"
+        )
+    
+    for index,student  in enumerate (students) : 
+        if student["id"]   == student_id : 
+            change_detail   = student_details.model_dump()
+            change_detail["id"]  = student_id  
+            students[index]  = change_detail  
+            return  change_detail
+
+    raise HTTPException(
+        status_code=404,
+        detail=f"student with ID {student_id} not found"
+    )
+
+    
+    
