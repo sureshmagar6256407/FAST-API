@@ -1219,6 +1219,27 @@ def get_stuents   () :
     return  students
 
 
+@app.get("/students/filter")
+def get_student_by_q (course:Optional[str] = None , active:Optional[bool] = None)   : 
+    filtered_student  = students  
+
+    if course is not None : 
+        filtered_student   = [  
+            c for c in filtered_student   
+            if c["course"].lower()  == course.lower()
+        ]
+    if active is not None : 
+        filtered_student  = [ 
+            a for a in filtered_student  
+            if a["active"]  == active 
+        ]
+
+    if not filtered_student : 
+        raise HTTPException ( 
+            status_code=404 ,  
+            detail= " no student found"
+        )
+    return filtered_student
 
 @app.get("/students/{student_id}")
 def get_student_by_id (student_id :int) : 
@@ -1281,4 +1302,5 @@ def change_data(student_id: int, student_details: CreateStudent):
     )
 
     
+
     
