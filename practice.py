@@ -1169,7 +1169,7 @@ def delete_item(item_id: int):
 
 
 
-from fastapi import FastAPI  
+from fastapi import FastAPI  ,HTTPException 
 from pydantic import BaseModel  
 from  typing import Optional  
 
@@ -1201,3 +1201,25 @@ students = [
         "active": False
     }
 ]
+
+
+@app.get("/students")
+def get_stuents   () : 
+    if not students : 
+        raise  HTTPException ( 
+            status_code= 404 , 
+            detail= "Student not found"
+        )
+    return  students
+
+
+
+@app.get("/students/{student_id}")
+def get_student_by_id (student_id :int) : 
+    for   student in students :  
+        if student["id"]  == student_id : 
+            return student  
+    raise HTTPException ( 
+        status_code= 404 , 
+        detail= f"student  with id {student_id} not found"
+    )
