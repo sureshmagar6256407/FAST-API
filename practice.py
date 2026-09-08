@@ -945,7 +945,7 @@ def add_bookings (book : CreateBooking) :
 """
 
 
-
+'''
 from fastapi import FastAPI  ,HTTPException 
 from pydantic import BaseModel  
 from typing import Optional  
@@ -1073,3 +1073,21 @@ def post_product (product :CreateProduct) :
     products.append(new_product)
     return new_product
 
+'''
+
+
+from fastapi import FastAPI  
+from pydantic import BaseModel  
+from typing import Optional  
+
+app  = FastAPI ( )
+
+
+
+
+inventory = [
+    {"id": 101, "title": "Wireless Mouse", "category": "Electronics", "price": 1200.0, "stock": 15, "discount": 10.0},
+    {"id": 102, "title": "Mechanical Keyboard", "category": "Electronics", "price": 4500.0, "stock": 0, "discount": 0.0},
+    {"id": 103, "title": "Python Programming Book", "category": "Books", "price": 850.0, "stock": 30, "discount": 5.0},
+    {"id": 104, "title": "Gaming Monitor", "category": "Electronics", "price": 25000.0, "stock": 4, "discount": 15.0},
+]
