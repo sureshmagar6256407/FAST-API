@@ -1182,7 +1182,11 @@ class CreateStudent(BaseModel) :
     course : str   
     active :bool 
 
-
+class UpdateStudent(BaseModel) : 
+    name : Optional[str]    = None  
+    age : Optional[int]  = None  
+    course : Optional[str]  = None  
+    active : Optional[bool] = None  
 
 students = [
     {
@@ -1303,4 +1307,51 @@ def change_data(student_id: int, student_details: CreateStudent):
 
     
 
-    
+@app.delete("/students/{student_id}")
+def delete_student(student_id: int):
+    for index, student in enumerate(students):
+        if student["id"] == student_id:
+            del students[index]
+            return {"message": f"student with ID {student_id} deleted"}
+
+    raise HTTPException(
+        status_code=404,
+        detail=f"student with ID {student_id} not found"
+    )
+
+
+@app.patch("/students/{student_id}")
+def update_student_partial(student_id: int, student_updates: UpdateStudent):
+    for index, student in enumerate(students):
+        if student["id"] == student_id:
+            updated_student = student.copy()
+
+            if student_updates.name is not None:
+                if student_updates.name.strip() == "":
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Ensure that the name must not be whitespace"
+                    )
+                updated_student["name"] = student_updates.name
+
+            if student_updates.age is not None:
+                if student_updates.age <= 0:
+                    raise HTTPException(
+                        status_code=400,
+                        detail="age must be positive and above 0"
+                    )
+                updated_student["age"] = student_updates.age
+
+            if student_updates.course is not None:
+                updated_student["course"] = student_updates.course
+
+            if student_updates.active is not None:
+                updated_student["active"] = student_updates.active
+
+            students[index] = updated_student
+            return updated_student
+
+    raise HTTPException(
+        status_code=404,
+        detail=f"student with ID {student_id} not found"
+    )
