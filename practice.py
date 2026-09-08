@@ -1076,6 +1076,8 @@ def post_product (product :CreateProduct) :
 '''
 
 
+
+'''
 from typing import Optional
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, Field
@@ -1163,3 +1165,39 @@ def delete_item(item_id: int):
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"Item with ID {item_id} not found"
     )
+'''  
+
+
+
+from fastapi import FastAPI  
+from pydantic import BaseModel  
+from  typing import Optional  
+
+
+app  = FastAPI ()
+
+
+
+students = [
+    {
+        "id": 1,
+        "name": "Ram",
+        "age": 20,
+        "course": "Python",
+        "active": True
+    },
+    {
+        "id": 2,
+        "name": "Sita",
+        "age": 21,
+        "course": "Data Science",
+        "active": True
+    },
+    {
+        "id": 3,
+        "name": "Hari",
+        "age": 19,
+        "course": "Python",
+        "active": False
+    }
+]
