@@ -1076,14 +1076,11 @@ def post_product (product :CreateProduct) :
 '''
 
 
-from fastapi import FastAPI  
-from pydantic import BaseModel  
-from typing import Optional  
+from typing import Optional
+from fastapi import FastAPI, HTTPException, status
+from pydantic import BaseModel, Field
 
-app  = FastAPI ( )
-
-
-
+app = FastAPI()
 
 inventory = [
     {"id": 101, "title": "Wireless Mouse", "category": "Electronics", "price": 1200.0, "stock": 15, "discount": 10.0},
@@ -1091,3 +1088,78 @@ inventory = [
     {"id": 103, "title": "Python Programming Book", "category": "Books", "price": 850.0, "stock": 30, "discount": 5.0},
     {"id": 104, "title": "Gaming Monitor", "category": "Electronics", "price": 25000.0, "stock": 4, "discount": 15.0},
 ]
+
+
+# 1. Request Body Schema
+class ItemCreate(BaseModel):
+    title: str = Field(..., min_length=3)
+    category: str = Field(..., min_length=1)
+    price: float = Field(..., gt=0)
+    stock: int = Field(..., ge=0)
+    discount: float = Field(0.0, ge=0.0, le=50.0)
+
+
+# 2. Response Schema
+class ItemResponse(BaseModel):
+    id: int
+    title: str
+    category: str
+    price: float
+    final_price: float
+    stock: int
+
+
+# POST Endpoint
+@app.post("/items", response_model=ItemResponse, status_code=status.HTTP_201_CREATED)
+def create_item(item: ItemCreate):
+    new_id = max((i["id"] for i in inventory), default=100) + 1
+    calculated_final_price = item.price - (item.price * item.discount / 100.0)
+
+    new_item = {
+        "id": new_id,
+        "title": item.title,
+        "category": item.category,
+        "price": item.price,
+        "final_price": calculated_final_price,
+        "stock": item.stock,
+        "discount": item.discount
+    }
+    
+    inventory.append(new_item)
+    return new_item
+
+
+# PUT Endpoint
+@app.put("/items/{item_id}", response_model=ItemResponse)
+def update_item(item_id: int, item: ItemCreate):
+    for i in inventory:
+        if i["id"] == item_id:
+            calculated_final_price = item.price - (item.price * item.discount / 100.0)
+            
+            i["title"] = item.title
+            i["category"] = item.category
+            i["price"] = item.price
+            i["stock"] = item.stock
+            i["discount"] = item.discount
+            i["final_price"] = calculated_final_price
+            
+            return i
+
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Item with ID {item_id} not found"
+    )
+
+
+# DELETE Endpoint
+@app.delete("/items/{item_id}")
+def delete_item(item_id: int):
+    for index, item in enumerate(inventory):
+        if item["id"] == item_id:
+            inventory.pop(index)
+            return {"message": "Item deleted successfully"}
+
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Item with ID {item_id} not found"
+    )
