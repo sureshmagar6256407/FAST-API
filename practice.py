@@ -1176,7 +1176,11 @@ from  typing import Optional
 
 app  = FastAPI ()
 
-
+class CreateStudent(BaseModel) : 
+    name : str   
+    age : int  
+    course : str   
+    active :bool 
 
 students = [
     {
@@ -1223,3 +1227,27 @@ def get_student_by_id (student_id :int) :
         status_code= 404 , 
         detail= f"student  with id {student_id} not found"
     )
+
+@app.post("/students")
+def post_student (student : CreateStudent ,) : 
+    if student.name.strip()  == "" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Please fill the name"
+        )
+
+    if student.age <= 0 : 
+        raise HTTPException ( 
+            status_code= 400  , 
+            detail= "Please ensure that the age is most be greater than 0"
+        )   
+
+    if students : 
+        new_id  = students[-1]["id"]+1  
+    else : 
+        new_id  = 1   
+
+    new_student  = student.model_dump()
+    new_student["id"]  = new_id  
+    students.append(new_student)
+    return new_student
