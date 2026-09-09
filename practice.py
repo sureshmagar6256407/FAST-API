@@ -1366,6 +1366,13 @@ from pydantic import BaseModel
 
 app  = FastAPI ()
 
+class CreateEmployee(BaseModel) : 
+    name : str  
+    department:str  
+    salary :  float  
+    active: bool 
+
+
 
 employees = [
     {
@@ -1436,3 +1443,30 @@ def get_employee_by_id (employee_id :int) :
         status_code= 404 ,  
         detail= f"With id {employee_id} not found"
     )
+
+
+@app.post ("/employees")
+def create_employee (detail : CreateEmployee) : 
+    if detail.name.strip()  == ""  or detail.department.strip()  == "": 
+        raise HTTPException ( 
+            status_code= 400 ,  
+            detail = "Donot leave the blank on name or department" , 
+            
+        )
+
+    if detail.salary <= 0 : 
+        raise HTTPException (  
+            status_code=400 , 
+            detail="Salary most be positive and above  0"
+        )
+
+    if employees : 
+        new_id  = employees[-1]["id"] +1   
+    else : 
+        new_id  = 1   
+
+    new_employee = detail.model_dump()  
+    new_employee["id"]   = new_id  
+    employees.append(new_employee)
+    return  new_employee 
+
