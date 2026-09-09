@@ -1360,7 +1360,7 @@ def update_student_partial(student_id: int, student_updates: UpdateStudent):
 '''
 
 
-from fastapi import FastAPI  
+from fastapi import FastAPI    , HTTPException
 from typing import Optional  
 from pydantic import BaseModel  
 
@@ -1390,3 +1390,14 @@ employees = [
         "active": False
     }
 ]
+
+
+@app.get("/employees")
+def get_employee  () : 
+    if not employees :   
+        HTTPException ( 
+            status_code= 404,  
+            detail="Employees Not found"
+        )
+    return employees  
+        
