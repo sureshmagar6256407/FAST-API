@@ -1470,3 +1470,19 @@ def create_employee (detail : CreateEmployee) :
     employees.append(new_employee)
     return  new_employee 
 
+
+
+@app.put("/employees/{employee_id}")   
+def change_data (employee_id :int  , detail  : CreateEmployee) : 
+
+    for index,emp in enumerate(employees) : 
+        if emp["id"]  == employee_id : 
+            change   = detail.model_dump()
+            change["id"]   = employee_id   
+            employees[index]   =  change  
+            return change    
+
+    raise  HTTPException ( 
+        status_code= 404 ,  
+        detail= f"with id {employee_id} not found"
+    )
