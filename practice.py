@@ -1402,6 +1402,30 @@ def get_employee  () :
     return employees  
 
 
+
+@app.get("/employees/filter")
+def get_employee_by_querry (department:Optional[str]  = None , active : Optional[bool]  = None)  :    
+    filtered_employees = employees    
+
+    if department is not None : 
+        filtered_employees  = [ 
+            d for d in filtered_employees   
+            if d["department"].lower()  == department.lower()
+        ]   
+    if active is not None : 
+        filtered_employees  = [  
+            a for a in filtered_employees  
+            if a["active"] == active
+        ]    
+
+    if not filtered_employees : 
+        raise  HTTPException (  
+            status_code= 404 , 
+            detail= " Student not Found"
+        )
+    return filtered_employees
+
+
 @app.get("/employees/{employee_id}")
 def get_employee_by_id (employee_id :int) : 
     for emp in employees   : 
