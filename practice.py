@@ -1457,7 +1457,7 @@ def create_employee (detail : CreateEmployee) :
     if detail.salary <= 0 : 
         raise HTTPException (  
             status_code=400 , 
-            detail="Salary most be positive and above  0"
+            detail="Salary most be positive and above  0 "
         )
 
     if employees : 
@@ -1485,4 +1485,19 @@ def change_data (employee_id :int  , detail  : CreateEmployee) :
     raise  HTTPException ( 
         status_code= 404 ,  
         detail= f"with id {employee_id} not found"
+    )
+
+
+@app.delete("/employees/{employee_id}")
+def delete_employee (employee_id  : int)  :  
+    for   index, emp in enumerate (employees) : 
+        if emp["id"]   == employee_id : 
+            del employees[index]
+            return  {
+                "message" : f"employee id {employee_id} information delete "  , 
+                "details" : emp
+            }
+    raise HTTPException (  
+        status_code= 404 , 
+        detail= f"with id {employee_id } not found"
     )
