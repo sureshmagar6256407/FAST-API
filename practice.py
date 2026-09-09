@@ -1373,6 +1373,12 @@ class CreateEmployee(BaseModel) :
     active: bool 
 
 
+class EmployeeUpdate(BaseModel) : 
+    name  : Optional[str] = None  
+    department : Optional[str] = None  
+    salary : Optional[float]  = None  
+    active : Optional[bool] = None
+
 
 employees = [
     {
@@ -1500,4 +1506,17 @@ def delete_employee (employee_id  : int)  :
     raise HTTPException (  
         status_code= 404 , 
         detail= f"with id {employee_id } not found"
+    )
+
+
+@app.patch("/employees/{employee_id}")
+def update_data (employee_id : int  , data : EmployeeUpdate) : 
+    for emp  in employees : 
+        if emp["id"]   == employee_id  : 
+            stored_data  = data.model_dump(exclude_unset=True)   
+            emp.update(stored_data)
+            return {"message": "Employee updated successfully", "employee": emp}
+    raise HTTPException (
+        status_code=404 , 
+        detail= "employee not found"
     )
