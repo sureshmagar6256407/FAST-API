@@ -1400,4 +1400,15 @@ def get_employee  () :
             detail="Employees Not found"
         )
     return employees  
+
+
+@app.get("/employees/{employee_id}")
+def get_employee_by_id (employee_id :int) : 
+    for emp in employees   : 
+        if emp["id"]  == employee_id : 
+            return emp  
         
+    raise  HTTPException ( 
+        status_code= 404 ,  
+        detail= f"With id {employee_id} not found"
+    )
