@@ -1169,6 +1169,8 @@ def delete_item(item_id: int):
 
 
 
+
+'''IMPORTANT 
 from fastapi import FastAPI  ,HTTPException 
 from pydantic import BaseModel  
 from  typing import Optional  
@@ -1355,3 +1357,36 @@ def update_student_partial(student_id: int, student_updates: UpdateStudent):
         status_code=404,
         detail=f"student with ID {student_id} not found"
     )
+'''
+
+
+from fastapi import FastAPI  
+from typing import Optional  
+from pydantic import BaseModel  
+
+app  = FastAPI ()
+
+
+employees = [
+    {
+        "id": 1,
+        "name": "Ram",
+        "department": "IT",
+        "salary": 50000,
+        "active": True
+    },
+    {
+        "id": 2,
+        "name": "Sita",
+        "department": "HR",
+        "salary": 45000,
+        "active": True
+    },
+    {
+        "id": 3,
+        "name": "Hari",
+        "department": "IT",
+        "salary": 60000,
+        "active": False
+    }
+]
