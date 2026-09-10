@@ -1674,3 +1674,18 @@ def post (create: CreateOrders) :
     new_orders["id"]  = new_id  
     orders.append(new_orders)
     return new_orders
+
+
+@app.put("/orders/{order_id}")  
+def put (order_id :int , all_change: CreateOrders) : 
+    for index,order in enumerate(orders) : 
+        if order["id"] == order_id : 
+            change  = all_change.model_dump()
+            change["id"]    = order_id   
+            orders[index]  = change  
+            return change  
+
+    raise HTTPException ( 
+        status_code= 404 ,  
+        detail= f"with id {order_id} not found"
+    )
