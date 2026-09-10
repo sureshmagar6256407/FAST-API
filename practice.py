@@ -1531,6 +1531,15 @@ from pydantic  import BaseModel
 
 app  = FastAPI()  
 
+class CreateOrders(BaseModel) : 
+    customer : str  
+    item : str
+    category : str  
+    quantity : int   
+    price : float  
+    status  : str  
+
+
 
 orders = [
     {
@@ -1612,6 +1621,8 @@ def get_order_by_filter(customer :Optional[str] =None , category:Optional[str] =
     return filtered_orders
 
 
+
+
 @app.get("/orders/{order_id}")
 def get_orders_by_id (order_id :int)  : 
     for order in orders : 
@@ -1622,3 +1633,44 @@ def get_orders_by_id (order_id :int)  :
         status_code=404 , 
         detail= f"with orders id {order_id} not found"
     )
+
+
+@app.post ("/orders")
+def post (create: CreateOrders) : 
+    if create.customer.strip() == "" : 
+        raise HTTPException ( 
+            status_code=400 , 
+            detail="please fill the customer"
+        )
+    if create.item.strip() =="" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Please fill the item"
+        )
+    if create.quantity <= 0 : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Please insure that quantity must be above 0"
+        )  
+
+    if create.price <=0  : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "please insure that quantity must be above 0"
+        )
+
+    if create.status != "pending" and  create.status != "preparing" and create.status != "delivered" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail="Only fill the pending/preparing and delivered"
+        )
+
+    if orders : 
+        new_id  = orders[-1]["id"]+1  
+    else : 
+        new_id = 1   
+
+    new_orders  = create.model_dump()
+    new_orders["id"]  = new_id  
+    orders.append(new_orders)
+    return new_orders
