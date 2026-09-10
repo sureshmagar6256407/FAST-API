@@ -1525,7 +1525,7 @@ def update_data (employee_id : int  , data : EmployeeUpdate) :
 '''
 
 
-from fastapi import FastAPI  
+from fastapi import FastAPI  ,HTTPException
 from typing import Optional  
 from pydantic  import BaseModel  
 
@@ -1570,3 +1570,13 @@ orders = [
         "status": "Preparing"
     }
 ]
+
+
+@app.get("/orders")
+def get_orders () : 
+    if not orders : 
+        raise HTTPException ( 
+            status_code= 404 , 
+            detail= "Orders Not found"
+        )
+    return orders
