@@ -1665,7 +1665,7 @@ def post (create: CreateOrders) :
             detail= "please insure that quantity must be above 0"
         )
 
-    if create.status != "pending" and  create.status != "preparing" and create.status != "delivered" : 
+    if create.status not in ["pending","preparing","delivered"] : 
         raise HTTPException ( 
             status_code= 400 , 
             detail="Only fill the pending/preparing and delivered"
@@ -1707,4 +1707,17 @@ def patch (order_id :int ,  update:Change) :
     raise HTTPException ( 
         status_code= 404 , 
         detail=f"with id {order_id} not found"
+    )
+
+@app.delete("/orders/{order_id}")
+def delete (order_id : int)  : 
+    for index,order  in enumerate(orders) : 
+        if order["id"]  == order_id : 
+            del orders[index]    
+            return { 
+                "message" :f"id with {order_id} orders delete"
+            }
+    raise HTTPException( 
+        status_code= 404 , 
+        detail= "not found"
     )
