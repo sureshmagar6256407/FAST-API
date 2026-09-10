@@ -1360,6 +1360,8 @@ def update_student_partial(student_id: int, student_updates: UpdateStudent):
 '''
 
 
+
+'''
 from fastapi import FastAPI    , HTTPException
 from typing import Optional  
 from pydantic import BaseModel  
@@ -1520,3 +1522,51 @@ def update_data (employee_id : int  , data : EmployeeUpdate) :
         status_code=404 , 
         detail= "employee not found"
     )
+'''
+
+
+from fastapi import FastAPI  
+from typing import Optional  
+from pydantic  import BaseModel  
+
+app  = FastAPI()  
+
+
+orders = [
+    {
+        "id": 1,
+        "customer": "Amit",
+        "item": "Pizza",
+        "category": "Fast Food",
+        "quantity": 2,
+        "price": 1200,
+        "status": "Preparing"
+    },
+    {
+        "id": 2,
+        "customer": "Nisha",
+        "item": "Momo",
+        "category": "Snacks",
+        "quantity": 3,
+        "price": 450,
+        "status": "Delivered"
+    },
+    {
+        "id": 3,
+        "customer": "Bikash",
+        "item": "Burger",
+        "category": "Fast Food",
+        "quantity": 1,
+        "price": 350,
+        "status": "Pending"
+    },
+    {
+        "id": 4,
+        "customer": "Riya",
+        "item": "Chowmein",
+        "category": "Chinese",
+        "quantity": 2,
+        "price": 500,
+        "status": "Preparing"
+    }
+]
