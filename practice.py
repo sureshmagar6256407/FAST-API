@@ -1539,7 +1539,13 @@ class CreateOrders(BaseModel) :
     price : float  
     status  : str  
 
-
+class Change(BaseModel) : 
+    customer :Optional[str] =None  
+    item:Optional[str] = None  
+    category :Optional[str] = None 
+    quantity : Optional[int] = None  
+    price : Optional[float] = None  
+    status  : Optional[str] = None
 
 orders = [
     {
@@ -1688,4 +1694,17 @@ def put (order_id :int , all_change: CreateOrders) :
     raise HTTPException ( 
         status_code= 404 ,  
         detail= f"with id {order_id} not found"
+    )
+
+
+@app.patch ("/orders/{order_id}")
+def patch (order_id :int ,  update:Change) : 
+    for order in orders : 
+        if order["id"] == order_id : 
+            update_data = update.model_dump(exclude_unset=True)
+            order.update(update_data)
+            return update_data  
+    raise HTTPException ( 
+        status_code= 404 , 
+        detail=f"with id {order_id} not found"
     )
