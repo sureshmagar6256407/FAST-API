@@ -1582,6 +1582,36 @@ def get_orders () :
     return orders
 
 
+@app.get("/orders/filter")
+def get_order_by_filter(customer :Optional[str] =None , category:Optional[str] = None , status:Optional[str] = None) : 
+    filtered_orders = orders  
+
+    if customer is not None : 
+        filtered_orders = [ 
+            c  for c in filtered_orders  
+            if c["customer"].lower()  == customer.lower()
+        ]
+
+    if category is not None : 
+        filtered_orders  =[ 
+            c for c in filtered_orders   
+            if c["category"].lower()  == category.lower()
+        ]
+
+    if status is not None : 
+        filtered_orders  = [ 
+            s for s in filtered_orders  
+            if s["status"].lower()  == status.lower()
+        ]  
+
+    if not filtered_orders : 
+        raise HTTPException ( 
+            status_code= 404 , 
+            detail= "orders not found"
+        )
+    return filtered_orders
+
+
 @app.get("/orders/{order_id}")
 def get_orders_by_id (order_id :int)  : 
     for order in orders : 
