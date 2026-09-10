@@ -1580,3 +1580,15 @@ def get_orders () :
             detail= "Orders Not found"
         )
     return orders
+
+
+@app.get("/orders/{order_id}")
+def get_orders_by_id (order_id :int)  : 
+    for order in orders : 
+        if order["id"]  == order_id : 
+            return order
+        
+    raise HTTPException ( 
+        status_code=404 , 
+        detail= f"with orders id {order_id} not found"
+    )
