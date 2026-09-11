@@ -1783,3 +1783,14 @@ def get_rentals () :
             detail= "rentals not found"
         )
     return rentals 
+
+
+@app.get("/rentals/{rental_id}")
+def get_rental_by_id(rental_id :int) : 
+    for rental in rentals : 
+        if rental["id"] ==rental_id : 
+            return rental    
+    raise HTTPException ( 
+        status_code= 404 , 
+        detail= f"With ID {rental_id} not found"
+    )
