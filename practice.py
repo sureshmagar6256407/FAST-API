@@ -1734,6 +1734,14 @@ from pydantic import BaseModel
 
 app =  FastAPI()
 
+class CreateRental(BaseModel) : 
+    customer:str
+    vehicle:str
+    vehicle_type:str
+    days:int
+    daily_rate:float
+    returned:bool
+
 
 rentals = [
     {
@@ -1825,3 +1833,43 @@ def get_rental_by_id(rental_id :int) :
         status_code= 404 , 
         detail= f"With ID {rental_id} not found"
     )
+
+@app.post("/rentals")
+def create_rentals(create :CreateRental) : 
+    if create.customer.strip()  =="" : 
+        raise HTTPException ( 
+            status_code= 400  , 
+            detail= "Please fill the customer option"
+        )
+
+    if create.vehicle.strip() =="" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail="Please fill the vehicle option"
+        )
+
+    if create.days <= 0 : 
+        raise HTTPException ( 
+            status_code= 400   , 
+            detail="Please days must be above then 0"
+        )
+    if create.daily_rate <=0 : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail="Ensure that the daily rate be above 0"
+        )
+    if create.vehicle_type not in ["Car","Bike","Suv"] : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail="Vehicle type must be Car/Bike/Suv"
+        )
+
+    if rentals : 
+        new_id = rentals[-1]["id"]+1  
+    else : 
+        new_id = 1  
+
+    new_rental  = create.model_dump()
+    new_rental["id"] = new_id  
+    rentals.append(new_rental)
+    return new_rental
