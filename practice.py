@@ -1727,7 +1727,7 @@ def delete (order_id : int)  :
 '''
 
 
-from fastapi import FastAPI  
+from fastapi import FastAPI  ,HTTPException
 from typing import Optional  
 from pydantic import BaseModel  
 
@@ -1774,3 +1774,12 @@ rentals = [
     }
 ]
 
+
+@app.get("/rentals")
+def get_rentals () : 
+    if not rentals :   
+        raise HTTPException ( 
+            status_code= 404 ,  
+            detail= "rentals not found"
+        )
+    return rentals 
