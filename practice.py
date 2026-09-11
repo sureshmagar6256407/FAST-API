@@ -1785,6 +1785,37 @@ def get_rentals () :
     return rentals 
 
 
+@app.get("/rentals/filter")
+def get_rental_by_querry (customer:Optional[str] = None , vehicle_type:Optional[str] = None, returned:Optional[bool] = None) :
+    filtered_rental = rentals  
+    if customer is not None : 
+        filtered_rental  = [ 
+            c for c in  filtered_rental  
+            if c["customer"].lower()  == customer.lower()
+        ]
+
+    if vehicle_type is not None : 
+        filtered_rental  = [ 
+            v for v in filtered_rental  
+            if v["vehicle_type"].lower()  == vehicle_type.lower()
+        ]
+
+    if returned is not None : 
+        filtered_rental   = [ 
+            r for r in filtered_rental  
+            if r["returned"]  == returned
+        ]
+    if not filtered_rental : 
+        raise HTTPException ( 
+            status_code= 404 , 
+            detail= "Not filtered rentals"
+        )
+
+    return filtered_rental
+
+
+
+
 @app.get("/rentals/{rental_id}")
 def get_rental_by_id(rental_id :int) : 
     for rental in rentals : 
