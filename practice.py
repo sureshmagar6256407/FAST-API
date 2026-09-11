@@ -1525,6 +1525,9 @@ def update_data (employee_id : int  , data : EmployeeUpdate) :
 '''
 
 
+
+
+'''
 from fastapi import FastAPI  ,HTTPException
 from typing import Optional  
 from pydantic  import BaseModel  
@@ -1721,3 +1724,53 @@ def delete (order_id : int)  :
         status_code= 404 , 
         detail= "not found"
     )
+'''
+
+
+from fastapi import FastAPI  
+from typing import Optional  
+from pydantic import BaseModel  
+
+
+app =  FastAPI()
+
+
+rentals = [
+    {
+        "id": 1,
+        "customer": "Anil",
+        "vehicle": "Toyota Corolla",
+        "vehicle_type": "Car",
+        "days": 4,
+        "daily_rate": 2500,
+        "returned": False
+    },
+    {
+        "id": 2,
+        "customer": "Mina",
+        "vehicle": "Honda Dio",
+        "vehicle_type": "Bike",
+        "days": 2,
+        "daily_rate": 800,
+        "returned": True
+    },
+    {
+        "id": 3,
+        "customer": "Kiran",
+        "vehicle": "Mahindra Scorpio",
+        "vehicle_type": "SUV",
+        "days": 6,
+        "daily_rate": 4000,
+        "returned": False
+    },
+    {
+        "id": 4,
+        "customer": "Puja",
+        "vehicle": "Yamaha FZ",
+        "vehicle_type": "Bike",
+        "days": 3,
+        "daily_rate": 1200,
+        "returned": False
+    }
+]
+
