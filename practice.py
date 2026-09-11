@@ -1873,3 +1873,17 @@ def create_rentals(create :CreateRental) :
     new_rental["id"] = new_id  
     rentals.append(new_rental)
     return new_rental
+
+
+@app.put("/rentals/{rental_id}")  
+def put (rental_id :int, create:CreateRental) : 
+    for index,rental in enumerate(rentals) : 
+       if rental["id"]  == rental_id : 
+           change  = create.model_dump()
+           change["id"]  = rental_id 
+           rentals[index]  = change  
+           return change  
+    raise HTTPException ( 
+        status_code= 404 , 
+        detail=f"With ID {rental_id} not found"
+    )
