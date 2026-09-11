@@ -1742,6 +1742,14 @@ class CreateRental(BaseModel) :
     daily_rate:float
     returned:bool
 
+class UpdateRental(BaseModel) : 
+    customer : Optional[str]  
+    vehicle : Optional[str]
+    vehicle_type : Optional[str]
+    days :Optional[int]
+    daily_rate: Optional[float]
+    returned:Optional[bool]
+
 
 rentals = [
     {
@@ -1887,3 +1895,39 @@ def put (rental_id :int, create:CreateRental) :
         status_code= 404 , 
         detail=f"With ID {rental_id} not found"
     )
+
+
+@app.patch("/rentals/{rental_id}")
+def patch (rental_id :int , update:UpdateRental): 
+    if update.days is not None and update.days <= 0 : 
+        raise HTTPException ( 
+            status_code=400 , 
+            detail="make sure that day must be above 0"
+        )
+
+    if update.daily_rate is not None and update.daily_rate <=0 : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail="make sure that daily rate must be above 0"
+        )
+
+    if update.vehicle_type is not None and update.vehicle_type not in ["Car","Bike","Suv"] : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "vehicle type most be Car/Bike/Suv"
+        )
+    
+    for index,rental in enumerate(rentals) : 
+        if rental["id"]  == rental_id : 
+            updates  = update.model_dump(exclude_unset=True)
+            # rental.update(updates)
+            # return updates
+            updates["id"]  = rental_id  
+            rentals[index].update(updates)
+            return rentals[index]
+    raise HTTPException ( 
+        status_code= 404 , 
+        detail=f"With ID {rental_id} not found"
+    )
+
+    
