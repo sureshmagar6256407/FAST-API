@@ -1931,3 +1931,16 @@ def patch (rental_id :int , update:UpdateRental):
     )
 
     
+@app.delete("/rentals/{rental_id}")
+def delete (rental_id :int) : 
+    for index,rental in enumerate(rentals) : 
+        if rental["id"] == rental_id : 
+            del rentals[index]  
+            return { 
+                "message" : f"with id {rental_id} delete" ,
+                "details" : rental
+            }
+    raise HTTPException ( 
+        status_code=404 , 
+        detail=f"with id {rental_id} not found"
+    )
