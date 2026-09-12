@@ -1727,6 +1727,8 @@ def delete (order_id : int)  :
 '''
 
 
+
+''' 
 from fastapi import FastAPI  ,HTTPException
 from typing import Optional  
 from pydantic import BaseModel  
@@ -1944,3 +1946,50 @@ def delete (rental_id :int) :
         status_code=404 , 
         detail=f"with id {rental_id} not found"
     )
+'''
+
+
+
+from fastapi import FastAPI  ,HTTPException  
+from typing import Optional  
+from pydantic import BaseModel  
+
+app = FastAPI()
+repairs = [
+    {
+        "id": 1,
+        "customer": "Aayush",
+        "device": "iPhone 13",
+        "issue": "Screen damaged",
+        "repair_cost": 12000,
+        "status": "Pending",
+        "paid": False
+    },
+    {
+        "id": 2,
+        "customer": "Nisha",
+        "device": "Samsung S23",
+        "issue": "Battery problem",
+        "repair_cost": 6500,
+        "status": "Completed",
+        "paid": True
+    },
+    {
+        "id": 3,
+        "customer": "Rohan",
+        "device": "Redmi Note 12",
+        "issue": "Charging problem",
+        "repair_cost": 3000,
+        "status": "Repairing",
+        "paid": False
+    },
+    {
+        "id": 4,
+        "customer": "Sabina",
+        "device": "OnePlus 11",
+        "issue": "Camera problem",
+        "repair_cost": 8000,
+        "status": "Completed",
+        "paid": True
+    }
+]
