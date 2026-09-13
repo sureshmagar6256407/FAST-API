@@ -2130,19 +2130,28 @@ def patch (repair_id : int , allupdate: UpdateRepairs) :
             detail= "status must be Pending/Repairing/Completed"
         )
 
-    if allupdate.paid is  None : 
-        raise HTTPException ( 
-            status_code= 400 , 
-            detail="Paid must be true/false"
-        )
     
     for index,repair in enumerate(repairs) : 
         if repair["id"]  == repair_id  :  
             update = allupdate.model_dump(exclude_unset=True)
             update["id"] = repair_id
-            repairs[index]  = update
+            repairs[index].update(update)
             return repairs[index]
     raise HTTPException ( 
         status_code= 404  , 
         detail= f"With id {repair_id} not found"
+    )
+
+@app.delete("/repairs/{repair_id}")
+def delete (repair_id : int) :  
+    for index,rep  in enumerate (repairs ): 
+        if rep["id"]  == repair_id : 
+            del  repairs[index]
+            return { 
+                "message" : f"with id {repair_id} deleted"  , 
+                "Details" : rep
+            }
+    raise HTTPException ( 
+        status_code= 404 , 
+        detail= f"with id {repair_id} not found"
     )
