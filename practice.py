@@ -2005,3 +2005,31 @@ def get_repairs () :
 
     return repairs  
 
+@app.get("/repairs/filter")
+def get_by_filter (customer : Optional[str] = None , status:Optional[str] = None , paid:Optional[bool] = None) : 
+    filtered_repairs  = repairs  
+
+    if customer is not None : 
+        filtered_repairs   = [  
+            c for c in filtered_repairs  
+            if c["customer"].lower()  == customer.lower()
+        ]  
+
+    if status is not None : 
+        filtered_repairs   = [  
+            s for s in filtered_repairs   
+            if s["status"].lower()   == status.lower()
+        ]
+    if paid is not None : 
+        filtered_repairs  = [ 
+            p for p in filtered_repairs  
+            if p["paid"]  == paid
+        ]
+    if not filtered_repairs : 
+        raise HTTPException  ( 
+            status_code= 404 ,  
+            detail= "Repairs not found"
+        )
+
+    return filtered_repairs  
+    
