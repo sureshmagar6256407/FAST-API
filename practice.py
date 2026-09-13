@@ -2093,3 +2093,18 @@ def post(create : CreateRepairs):
     create_new["id"]  = new_id  
     repairs.append(create_new)
     return create_new
+
+
+@app.put("/repairs/{repair_id}")
+def put (repair_id : int , create: CreateRepairs) : 
+    for  index,repair in enumerate(repairs) : 
+        if repair["id"]  == repair_id : 
+            update= create.model_dump()
+            update["id"]  = repair_id  
+            repairs[index] = update 
+            return update 
+
+    raise HTTPException ( 
+        status_code= 404 , 
+        detail= f"With id {repair_id} not found"
+    )
