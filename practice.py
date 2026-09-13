@@ -1955,6 +1955,15 @@ from typing import Optional
 from pydantic import BaseModel  
 
 app = FastAPI()
+class CreateRepairs (BaseModel) : 
+    customer : str    
+    device : str  
+    issue : str  
+    repair_cost  : float   
+    status : str   
+    paid: bool
+
+
 repairs = [
     {
         "id": 1,
@@ -2042,3 +2051,45 @@ def get_by_id (repair_id : int) :
         status_code= 404 ,  
         detail= f"With id {repair_id} not found"
     )
+
+
+@app.post("/repairs")
+def post(create : CreateRepairs):  
+    if create.customer.strip() == "" : 
+        raise HTTPException ( 
+            status_code= 400   , 
+            detail= "please donot leave the customer blank"
+        )
+    if create.device.strip() =="" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "please don't leave the device blank"
+        )
+
+    if create.issue.strip() =="" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "please ensure that issue dont be blank"
+        )
+
+    if create.repair_cost <=0 : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail="Insure that the repair cost above 0"
+        )
+
+    if create.status not in ["Pending","Repairing","Completed"] : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Please status only be Pending/Repairing/Completed only"
+        )
+
+    if repairs : 
+        new_id  = repairs[-1]["id"]+1   
+    else : 
+        new_id  = 1  
+
+    create_new  = create.model_dump()
+    create_new["id"]  = new_id  
+    repairs.append(create_new)
+    return create_new
