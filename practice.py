@@ -1963,6 +1963,13 @@ class CreateRepairs (BaseModel) :
     status : str   
     paid: bool
 
+class UpdateRepairs(BaseModel) : 
+    customer : Optional[str] = None  
+    device : Optional[str] = None  
+    issue  : Optional[str] = None  
+    repair_cost : Optional[float] = None  
+    status :Optional[str] = None  
+    paid : Optional[bool] = None  
 
 repairs = [
     {
@@ -2099,12 +2106,43 @@ def post(create : CreateRepairs):
 def put (repair_id : int , create: CreateRepairs) : 
     for  index,repair in enumerate(repairs) : 
         if repair["id"]  == repair_id : 
-            update= create.model_dump()
-            update["id"]  = repair_id  
-            repairs[index] = update 
-            return update 
+            change= create.model_dump()
+            change["id"]  = repair_id  
+            repairs[index] = change 
+            return change 
 
     raise HTTPException ( 
         status_code= 404 , 
+        detail= f"With id {repair_id} not found"
+    )
+
+@app.patch("/repairs/{repair_id}")
+def patch (repair_id : int , allupdate: UpdateRepairs) : 
+    if allupdate.repair_cost is not None and allupdate.repair_cost <=0 : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail="repair cost must be above 0"
+        )
+
+    if allupdate.status is not  None and allupdate.status not in ["Pending","Repairing","Completed"] :  
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "status must be Pending/Repairing/Completed"
+        )
+
+    if allupdate.paid is  None : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail="Paid must be true/false"
+        )
+    
+    for index,repair in enumerate(repairs) : 
+        if repair["id"]  == repair_id  :  
+            update = allupdate.model_dump(exclude_unset=True)
+            update["id"] = repair_id
+            repairs[index]  = update
+            return repairs[index]
+    raise HTTPException ( 
+        status_code= 404  , 
         detail= f"With id {repair_id} not found"
     )
