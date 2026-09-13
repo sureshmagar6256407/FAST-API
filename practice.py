@@ -1993,3 +1993,15 @@ repairs = [
         "paid": True
     }
 ]
+
+
+@app.get("/repairs")
+def get_repairs () : 
+    if not repairs  : 
+        raise HTTPException ( 
+            status_code= 404 , 
+            detail="repairs not found"
+        )
+
+    return repairs  
+
