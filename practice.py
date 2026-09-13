@@ -2032,4 +2032,13 @@ def get_by_filter (customer : Optional[str] = None , status:Optional[str] = None
         )
 
     return filtered_repairs  
-    
+
+@app.get("/repairs/{repair_id}")   
+def get_by_id (repair_id : int) : 
+    for repair  in repairs : 
+        if repair["id"]  == repair_id : 
+            return repair  
+    raise HTTPException ( 
+        status_code= 404 ,  
+        detail= f"With id {repair_id} not found"
+    )
