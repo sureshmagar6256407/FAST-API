@@ -2303,3 +2303,17 @@ def post_ticket (new: CreateTicket) :
     new_ticket["id"]  = new_id  
     tickets.append(new_ticket)
     return new_ticket 
+
+
+@app.put("/tickets/{ticket_id}")
+def put_ticket (ticket_id :int , replace : CreateTicket) :    
+    for index, ticket  in enumerate(tickets) : 
+        if ticket["id"]  ==  ticket_id : 
+            update =  replace.model_dump()
+            update["id"] = ticket_id   
+            tickets[index]  = update  
+            return update  
+    raise HTTPException ( 
+        status_code= 404 , 
+        detail= f"With id {ticket_id} not found"
+    )
