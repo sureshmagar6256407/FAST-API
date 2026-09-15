@@ -2172,7 +2172,15 @@ class CreateTicket (BaseModel) :
     seat_no  : int
     fare : float   
     travel_date : str
-    confirmed : bool
+    confirmed : bool   
+
+class ChangeTicket(BaseModel) : 
+    passenger : Optional[str] = None  
+    route : Optional[str] = None  
+    seat_no  : Optional[int] = None  
+    fare : Optional[float] = None  
+    travel_date  : Optional[str] = None  
+    confirmed : Optional[bool] = None  
 
 tickets = [
     {
@@ -2315,5 +2323,64 @@ def put_ticket (ticket_id :int , replace : CreateTicket) :
             return update  
     raise HTTPException ( 
         status_code= 404 , 
+        detail= f"With id {ticket_id} not found"
+    )
+
+
+@app.patch("/tickets/{ticket_id}")
+def patch_ticket     (ticket_id : int , change : ChangeTicket) :    
+
+    if change.seat_no is not None and  change.seat_no <=0  : 
+        raise HTTPException ( 
+            status_code= 400 ,  
+            detail= "Seat_no must be above  0"
+        )
+
+    if change.fare is not None and  change.fare < 100 : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Please enusure that ticket fare be over 100"
+        )
+
+    if change.passenger is not None and change.passenger.strip() == "" : 
+        raise HTTPException ( 
+            status_code= 400  , 
+            detail= "Ensure that passenget not leave blank"
+        )  
+    if change.route is not None and change.route.strip() == "" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Ensure that Route not be Blank"
+        )  
+    if change.travel_date is not None and change.travel_date.strip() == "" : 
+        raise HTTPException ( 
+            status_code= 400 ,  
+            detail= "Ensure that travel date is not blank"
+        )
+    
+    for index,ticket in enumerate(tickets) : 
+        if ticket["id"] == ticket_id : 
+            update_data = change.model_dump(exclude_unset= True)
+            update_data["id"]  = ticket_id         
+            tickets[index].update(update_data)  
+            return tickets[index]    
+        
+    raise HTTPException ( 
+        status_code= 404 ,    
+        detail= f"With ID {ticket_id} not found " 
+    )
+
+@app.delete("/tickets/{ticket_id}")
+def delete_ticket(ticket_id : int) : 
+    for index, ticket in enumerate(tickets) : 
+        if ticket["id"] == ticket_id : 
+            del tickets[index]
+            return {
+                "message" : f"id {ticket_id} is deleted" , 
+                "details" : ticket
+            } 
+            
+    raise HTTPException ( 
+        status_code= 404 ,  
         detail= f"With id {ticket_id} not found"
     )
