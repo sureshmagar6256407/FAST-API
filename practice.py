@@ -1949,7 +1949,7 @@ def delete (rental_id :int) :
 '''
 
 
-
+'''
 from fastapi import FastAPI  ,HTTPException  
 from typing import Optional  
 from pydantic import BaseModel  
@@ -2155,3 +2155,55 @@ def delete (repair_id : int) :
         status_code= 404 , 
         detail= f"with id {repair_id} not found"
     )
+'''
+
+
+
+
+from fastapi import FastAPI  ,HTTPException  
+from typing import Optional  
+from pydantic import BaseModel 
+
+app   = FastAPI()
+
+
+tickets = [
+    {
+        "id": 1,
+        "passenger": "Bikash",
+        "route": "Kathmandu-Pokhara",
+        "seat_no": 12,
+        "travel_date": "2026-09-20",
+        "fare": 1200,
+        "confirmed": True
+    },
+    {
+        "id": 2,
+        "passenger": "Suman",
+        "route": "Butwal-Kathmandu",
+        "seat_no": 7,
+        "travel_date": "2026-09-21",
+        "fare": 1500,
+        "confirmed": False
+    },
+    {
+        "id": 3,
+        "passenger": "Rita",
+        "route": "Pokhara-Chitwan",
+        "seat_no": 18,
+        "travel_date": "2026-09-22",
+        "fare": 900,
+        "confirmed": True
+    },
+    {
+        "id": 4,
+        "passenger": "Nabin",
+        "route": "Kathmandu-Biratnagar",
+        "seat_no": 25,
+        "travel_date": "2026-09-23",
+        "fare": 1800,
+        "confirmed": True
+    }
+]
+
+
