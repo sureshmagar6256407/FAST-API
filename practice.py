@@ -2166,6 +2166,13 @@ from pydantic import BaseModel
 
 app   = FastAPI()
 
+class CreateTicket (BaseModel) : 
+    passenger : str   
+    route : str  
+    seat_no  : int
+    fare : float   
+    travel_date : str
+    confirmed : bool
 
 tickets = [
     {
@@ -2256,3 +2263,43 @@ def get_ticket_by_id (ticket_id : int) :
         status_code= 404 , 
         detail= f"With id {ticket_id} not found"
     )
+
+@app.post("/tickets")
+def post_ticket (new: CreateTicket) :  
+    if new.passenger.strip() == "" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Please dont leave blank on passenger"
+        )   
+    if new.route.strip() == ""  : 
+        raise HTTPException ( 
+            status_code= 400  , 
+            detail= "Please dont leave blank on Route"
+        )
+
+    if new.seat_no <= 0 : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Seat no most be above 0"
+        )   
+
+    if new.fare < 100  : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "fare price most be above  100"
+        )
+    if new.travel_date.strip () ==""  :  
+        raise  HTTPException ( 
+            status_code= 400 , 
+            detail= "Please dont leave the travel date blank"
+        )  
+
+    if tickets : 
+        new_id  = tickets[-1]["id"] + 1   
+    else : 
+        new_id  = 1   
+
+    new_ticket  = new.model_dump()
+    new_ticket["id"]  = new_id  
+    tickets.append(new_ticket)
+    return new_ticket 
