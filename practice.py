@@ -2244,3 +2244,15 @@ def get_filter_ticket (route: Optional[str] = None , confirmed : Optional[bool] 
             detail= "NOT Filtered Ticket found"
         )
     return filtered_tickets 
+
+
+@app.get("/tickets/{ticket_id}")
+def get_ticket_by_id (ticket_id : int) : 
+    for  ticket in tickets : 
+        if ticket["id"]  == ticket_id : 
+            return ticket  
+
+    raise HTTPException ( 
+        status_code= 404 , 
+        detail= f"With id {ticket_id} not found"
+    )
