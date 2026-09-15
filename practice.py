@@ -2215,3 +2215,32 @@ def get_tickets () ->  object :
             detail= "Tickets not found"
         )
     return tickets
+
+
+@app.get("/tickets/filter")
+def get_filter_ticket (route: Optional[str] = None , confirmed : Optional[bool] = None , passenger :Optional[str] = None) : 
+    filtered_tickets  = tickets  
+
+    if route is not None :  
+        filtered_tickets  = [ 
+            r for r  in filtered_tickets  
+            if r["route"].lower()  == route.lower()
+        ]
+
+    if confirmed is not None :  
+        filtered_tickets  = [  
+            c for c in filtered_tickets    
+            if c["confirmed"]  == confirmed  
+        ]  
+
+    if passenger is not None : 
+        filtered_tickets  = [ 
+            p for p in filtered_tickets  
+            if p["passenger"].lower()  == passenger.lower()
+        ]
+    if not filtered_tickets : 
+        raise HTTPException  ( 
+            status_code= 404 , 
+            detail= "NOT Filtered Ticket found"
+        )
+    return filtered_tickets 
