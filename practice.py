@@ -2207,3 +2207,11 @@ tickets = [
 ]
 
 
+@app.get("/tickets")
+def get_tickets () ->  object : 
+    if not tickets  : 
+        raise HTTPException (  
+            status_code= 404     , 
+            detail= "Tickets not found"
+        )
+    return tickets
