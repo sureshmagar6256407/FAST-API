@@ -2436,3 +2436,14 @@ parcels = [
         "cod": False
     }
 ]
+
+
+
+@app.get("/parcels")
+def get_parcels () : 
+    if not parcels : 
+        raise HTTPException ( 
+            status_code= 404 , 
+            detail= "Parcels Not Found"
+        )
+    return parcels
