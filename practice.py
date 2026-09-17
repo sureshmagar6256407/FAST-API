@@ -2160,6 +2160,7 @@ def delete (repair_id : int) :
 
 
 
+'''
 from fastapi import FastAPI  ,HTTPException  
 from typing import Optional  
 from pydantic import BaseModel 
@@ -2384,3 +2385,54 @@ def delete_ticket(ticket_id : int) :
         status_code= 404 ,  
         detail= f"With id {ticket_id} not found"
     )
+'''
+
+
+from fastapi import FastAPI  ,HTTPException
+from pydantic import BaseModel
+
+
+app = FastAPI()
+
+parcels = [
+    {
+        "id": 1,
+        "sender": "Arjun",
+        "receiver": "Mina",
+        "destination": "Pokhara",
+        "weight": 2.5,
+        "delivery_fee": 450,
+        "status": "In Transit",
+        "cod": False
+    },
+    {
+        "id": 2,
+        "sender": "Ramesh",
+        "receiver": "Sita",
+        "destination": "Butwal",
+        "weight": 5.0,
+        "delivery_fee": 800,
+        "status": "Delivered",
+        "cod": True
+    },
+    {
+        "id": 3,
+        "sender": "Kiran",
+        "receiver": "Bikash",
+        "destination": "Chitwan",
+        "weight": 1.2,
+        "delivery_fee": 300,
+        "status": "Pending",
+        "cod": True
+    },
+    {
+        "id": 4,
+        "sender": "Nisha",
+        "receiver": "Aayush",
+        "destination": "Dharan",
+        "weight": 3.8,
+        "delivery_fee": 600,
+        "status": "In Transit",
+        "cod": False
+    }
+]
