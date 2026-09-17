@@ -2447,3 +2447,34 @@ def get_parcels () :
             detail= "Parcels Not Found"
         )
     return parcels
+
+
+
+@app.get("/parcels/filter")
+def get_parcels_by_filter (destination : str | None = None  , status:str | None = None , cod : bool |None=None) : 
+    filtered_parcels   = parcels   
+
+    if destination is not None : 
+        filtered_parcels = [  
+            d for d in filtered_parcels  
+            if d["destination"].lower() == destination.lower()
+        ]
+
+    if status is not None : 
+        filtered_parcels = [ 
+            s for  s in filtered_parcels  
+            if s["status"].lower() == status.lower()
+        ]
+
+    if cod is not None : 
+        filtered_parcels = [ 
+            c for c in filtered_parcels  
+            if c["cod"]== cod
+        ]
+    if not filtered_parcels : 
+        raise HTTPException ( 
+            status_code= 404 , 
+            detail= "Not Found Parcel"
+        )
+    return filtered_parcels
+
