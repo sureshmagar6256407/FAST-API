@@ -2478,3 +2478,15 @@ def get_parcels_by_filter (destination : str | None = None  , status:str | None 
         )
     return filtered_parcels
 
+
+
+@app.get("/parcels/{parcel_id}")  
+def get_parcel_by_id (parcel_id :int) : 
+    for parcel in parcels : 
+        if parcel["id"]  == parcel_id : 
+            return parcel   
+        
+    raise HTTPException ( 
+        status_code= 404 , 
+        detail= f"With id {parcel_id} not found"
+    )
