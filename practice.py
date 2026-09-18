@@ -2522,20 +2522,20 @@ def post_parcels (create: CreateParcels) :
 
     if create.weight <= 0 : 
         raise HTTPException ( 
-            status_code= 400
+            status_code= 400 , 
             detail= "The weight must be above 0"
         )
 
     if create.delivery_fee <= 0 : 
         raise HTTPException ( 
-            status_code= 400
-            detail="the delivey must be above 0"
+            status_code= 400 , 
+            detail="the delivey fee must be above 0"
         )  
 
     if create.status not in  ["Pending","In Transit","Delivered"] : 
         raise HTTPException ( 
             status_code= 400 , 
-            detail= "please ensure that the status only be Pending/In Transit/Delivered"
+            detail= "please ensure that the status only be Pending/In Transit/Delivered"  
         )
 
     if parcels : 
@@ -2550,10 +2550,16 @@ def post_parcels (create: CreateParcels) :
 
 
 
+@app.put("/parcels/{parcel_id}")
+def put_parcels (parcel_id : int  ,update: CreateParcels) : 
+    for index,par  in enumerate(parcels) : 
+        if par["id"] ==  parcel_id :   
+            update_parcel  = update.model_dump()
+            update_parcel["id"] =  parcel_id   
+            parcels[index] = update_parcel  
+            return update_parcel  
+    raise HTTPException ( 
+        status_code= 400  , 
+        detail= f"With id {parcel_id} not found "
+    )
 
-
-
-
-
-
-    
