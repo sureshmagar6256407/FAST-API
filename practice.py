@@ -2625,4 +2625,16 @@ def patch_data (parcel_id :int , change : ChangeParcels) :
     )
 
 
-    
+@app.delete("/parcels/{parcel_id}")
+def delete_parcels (parcel_id:int) : 
+    for index,par in enumerate(parcels) : 
+        if par["id"] == parcel_id : 
+            del parcels[index]
+            return { 
+                "message" : f"With id {parcel_id} deleted" , 
+                "details" : par
+            }
+    raise HTTPException ( 
+        status_code= 404 ,  
+        detail= f"With id {parcel_id} not found"
+    )
