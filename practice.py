@@ -2404,6 +2404,18 @@ class CreateParcels (BaseModel) :
     status :str  
     cod : bool
 
+
+class ChangeParcels (BaseModel) : 
+    sender : str | None = None 
+    receiver :str | None= None  
+    destination  :str | None = None  
+    weight  :float | None = None  
+    delivery_fee : float  |None = None  
+    status :str | None = None  
+    cod : bool  | None = None  
+
+
+
 parcels = [
     {
         "id": 1,
@@ -2563,3 +2575,54 @@ def put_parcels (parcel_id : int  ,update: CreateParcels) :
         detail= f"With id {parcel_id} not found "
     )
 
+
+@app.patch("/parcels/{parcel_id}")
+def patch_data (parcel_id :int , change : ChangeParcels) : 
+
+    if change.weight is not None and change.weight <= 0 : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Weight must be above 0"
+        )
+
+    if change.delivery_fee is not None and  change.delivery_fee <= 0 : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "delivery fee must be above 0"
+        )
+
+    if change.sender is not None and change.sender.strip() =="" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "please ensure that sender not be blank"
+        )  
+    if change.receiver is not None and change.receiver.strip() == "" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "please ensure that receiver not be blank"
+        )  
+
+    if change.destination is not None and change.destination.strip () == "" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "please ensure that destination not be blank"
+        )    
+
+    if change.status is not None and change.status not in ["Pending","In Transit","Delivered"]  : 
+        raise HTTPException ( 
+            status_code= 400  , 
+            detail= "Please fill status with Pending/In Transit/Delivered"
+        )
+    for index , par  in enumerate(parcels)  : 
+        if par["id"] == parcel_id : 
+            change_data  = change.model_dump(exclude_unset=True)
+            change_data["id"]  = parcel_id  
+            parcels[index].update(change_data)
+            return change_data  
+    raise HTTPException ( 
+        status_code= 404 , 
+        detail= f"with id {parcel_id} not found"
+    )
+
+
+    
