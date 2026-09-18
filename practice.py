@@ -2394,6 +2394,16 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
+
+class CreateParcels (BaseModel) : 
+    sender:str  
+    receiver : str  
+    destination : str  
+    weight : float  
+    delivery_fee : float 
+    status :str  
+    cod : bool
+
 parcels = [
     {
         "id": 1,
@@ -2490,3 +2500,60 @@ def get_parcel_by_id (parcel_id :int) :
         status_code= 404 , 
         detail= f"With id {parcel_id} not found"
     )
+
+
+@app.post("/parcels")
+def post_parcels (create: CreateParcels) : 
+    if create.sender.strip() == "" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Please ensure that the sender name not be blank"
+        )
+    if create.receiver.strip() == "" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "please ensure that the receiver name not blank"
+        )
+    if create.destination.strip () == "" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail="please ensure that the destination not be blank"
+        )
+
+    if create.weight <= 0 : 
+        raise HTTPException ( 
+            status_code= 400
+            detail= "The weight must be above 0"
+        )
+
+    if create.delivery_fee <= 0 : 
+        raise HTTPException ( 
+            status_code= 400
+            detail="the delivey must be above 0"
+        )  
+
+    if create.status not in  ["Pending","In Transit","Delivered"] : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "please ensure that the status only be Pending/In Transit/Delivered"
+        )
+
+    if parcels : 
+        new_id = parcels[-1]["id"]+1   
+    else : 
+        new_id  = 1   
+
+    new_parcel  =  create.model_dump()
+    new_parcel["id"]  = new_id  
+    parcels.append (new_parcel)
+    return new_parcel  
+
+
+
+
+
+
+
+
+
+    
