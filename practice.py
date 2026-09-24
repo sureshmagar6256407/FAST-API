@@ -2388,6 +2388,8 @@ def delete_ticket(ticket_id : int) :
 '''
 
 
+
+'''
 from fastapi import FastAPI  ,HTTPException
 from pydantic import BaseModel
 
@@ -2638,3 +2640,50 @@ def delete_parcels (parcel_id:int) :
         status_code= 404 ,  
         detail= f"With id {parcel_id} not found"
     )
+'''
+
+
+
+
+from  fastapi import FastAPI 
+from pydantic import BaseModel  
+
+
+shows = [
+    {
+        "id": 1,
+        "movie": "Interstellar",
+        "hall": "Hall A",
+        "show_time": "10:30",
+        "ticket_price": 350,
+        "available_seats": 45,
+        "is_3d": False
+    },
+    {
+        "id": 2,
+        "movie": "Avatar",
+        "hall": "Hall B",
+        "show_time": "14:00",
+        "ticket_price": 500,
+        "available_seats": 20,
+        "is_3d": True
+    },
+    {
+        "id": 3,
+        "movie": "Inception",
+        "hall": "Hall C",
+        "show_time": "18:30",
+        "ticket_price": 400,
+        "available_seats": 8,
+        "is_3d": False
+    },
+    {
+        "id": 4,
+        "movie": "Dune",
+        "hall": "Hall A",
+        "show_time": "21:00",
+        "ticket_price": 550,
+        "available_seats": 0,
+        "is_3d": True
+    }
+]
