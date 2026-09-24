@@ -2645,10 +2645,10 @@ def delete_parcels (parcel_id:int) :
 
 
 
-from  fastapi import FastAPI 
+from  fastapi import FastAPI , HTTPException
 from pydantic import BaseModel  
 
-
+app  = FastAPI()
 shows = [
     {
         "id": 1,
@@ -2687,3 +2687,14 @@ shows = [
         "is_3d": True
     }
 ]
+
+
+
+@app.get("/shows")
+def get_shows () :  
+    if not shows : 
+        raise  HTTPException ( 
+            status_code=404 , 
+            detail= "Shows not found"
+        )
+    return shows
