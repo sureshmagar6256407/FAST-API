@@ -2792,3 +2792,15 @@ def create_shows (create: CreateShows) :
     shows.append(new_show) 
     return new_show  
 
+@app.put("/shows/{show_id}")
+def put_shows (show_id : int , update: CreateShows) : 
+    for index,show in enumerate( shows ) : 
+        if show["id"] == show_id : 
+            update_shows = update.model_dump()
+            update_shows["id"]  = show_id     
+            shows[index] = update_shows 
+            return update_shows  
+    raise HTTPException ( 
+        status_code= 404  , 
+        detail= f"with id {show_id} not found"
+    )
