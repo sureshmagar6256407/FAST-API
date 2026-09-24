@@ -2649,6 +2649,16 @@ from  fastapi import FastAPI , HTTPException
 from pydantic import BaseModel  
 
 app  = FastAPI()
+
+
+class CreateShows(BaseModel) : 
+    movie: str   
+    hall : str  
+    show_time : str  
+    ticket_price : float  
+    available_seat : int  
+    is_3d : bool
+
 shows = [
     {
         "id": 1,
@@ -2739,3 +2749,46 @@ def get_shows_by_para (show_id : int)  :
         status_code= 404 , 
         detail= f"With id {show_id} not found"
     )
+
+@app.post("/shows")
+def create_shows (create: CreateShows) : 
+    if create.movie.strip() == "" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Please ensure that movie option is not blank"
+        )
+
+    if create.hall.strip() == "" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Please ensure that hall option is not blank"
+        )
+
+    if create.show_time.strip() == "" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Please ensure that show_time option is not blank"
+        )
+
+    if create.ticket_price <= 0 : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Ensure that the ticket_price must be above the 0"
+        )
+
+    if create.available_seat  < 0 : 
+        raise HTTPException ( 
+            status_code=400  , 
+            detail= "Ensure that the available_seat most be positive"
+        )
+
+    if shows : 
+        new_id = shows[-1]["id"]+1  
+    else : 
+        new_id = 1      
+
+    new_show = create.model_dump()
+    new_show["id"] = new_id  
+    shows.append(new_show) 
+    return new_show  
+
