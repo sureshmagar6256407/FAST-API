@@ -2698,3 +2698,32 @@ def get_shows () :
             detail= "Shows not found"
         )
     return shows
+
+@app.get("/shows/filter")
+def get_show_by_querry (movie : str | None= None  , hall:str| None= None , is_3d : bool | None = None) : 
+    filtered_shows  = shows   
+
+    if movie is not None : 
+        filtered_shows   = [ 
+            m for m in filtered_shows   
+            if m["movie"].lower()  == movie.lower()
+        ]
+
+    if hall is not None : 
+        filtered_shows = [  
+            h for h in filtered_shows  
+            if h["hall"].lower()  == hall.lower()
+        ]
+    if is_3d is not None : 
+        filtered_shows  = [  
+            d for d in filtered_shows  
+            if d["is_3d"]  == is_3d
+        ]
+
+    if not filtered_shows : 
+        raise HTTPException  ( 
+            status_code= 404 , 
+            detail= "Filteres show not Found"
+        )
+
+    return filtered_shows 
