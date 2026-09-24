@@ -2659,6 +2659,14 @@ class CreateShows(BaseModel) :
     available_seat : int  
     is_3d : bool
 
+class ChangeShows(BaseModel) : 
+    movie : str | None = None  
+    hall : str | None = None   
+    show_time : str | None = None  
+    ticket_price : float  | None = None  
+    available_seat : int | None = None 
+    is_3d : bool  | None= None  
+
 shows = [
     {
         "id": 1,
@@ -2802,5 +2810,67 @@ def put_shows (show_id : int , update: CreateShows) :
             return update_shows  
     raise HTTPException ( 
         status_code= 404  , 
+        detail= f"with id {show_id} not found"
+    )
+
+
+@app.patch("/shows/{show_id}")
+def patch_shows (show_id :int , change : ChangeShows) : 
+
+    for show in shows : 
+        if show["id"] == show_id : 
+            break  
+    else : 
+        raise HTTPException ( 
+                status_code=404 , 
+                detail= f"With id {show_id} not found"
+            )
+    if change.movie is not None  and change.movie.strip()=="" : 
+        raise HTTPException ( 
+                    status_code= 400 , 
+                    detail= "Ensure that the movie/hall/show_time not be blank"
+                ) 
+
+    if change.hall is not None and change.hall.strip() == "" : 
+        raise HTTPException ( 
+                    status_code= 400 , 
+                    detail= "Ensure that the movie/hall/show_time not be blank"
+                )
+    if change.show_time is not None and change.show_time.strip() == "" : 
+        raise HTTPException ( 
+                    status_code= 400 , 
+                    detail= "Ensure that the movie/hall/show_time not be blank"
+                )
+    if change.ticket_price is not None and change.ticket_price <= 0 : 
+        raise HTTPException ( 
+            status_code=400    , 
+            detail= "Please ensure that ticket_price must be above 0"
+        )
+    if change.available_seat is not None and  change.available_seat < 0 : 
+        raise HTTPException ( 
+            status_code= 400  , 
+            detail= "Ensure that the available seat is must be positive"
+        )
+
+    for index , show in enumerate(shows)  : 
+        if show["id"] == show_id : 
+            change_show  = change.model_dump(exclude_unset=True)
+            shows[index].update(change_show)
+            return shows[index]
+        
+    
+
+
+@app.delete("/shows/{show_id}")
+def delete_show(show_id : int) : 
+    for index, show in enumerate(shows) : 
+        if show["id"]  == show_id : 
+            del shows[index]
+            return { 
+                "Message" :f"With id {show_id} found" , 
+                "Detail" : show
+            }
+    raise HTTPException ( 
+        status_code=  404 , 
         detail= f"with id {show_id} not found"
     )
