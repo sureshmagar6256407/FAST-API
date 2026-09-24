@@ -2726,4 +2726,16 @@ def get_show_by_querry (movie : str | None= None  , hall:str| None= None , is_3d
             detail= "Filteres show not Found"
         )
 
-    return filtered_shows 
+    return filtered_shows
+
+
+@app.get("/shows/{show_id}")
+def get_shows_by_para (show_id : int)  :  
+    for show in shows : 
+        if show["id"]  == show_id : 
+            return show  
+
+    raise HTTPException ( 
+        status_code= 404 , 
+        detail= f"With id {show_id} not found"
+    )
