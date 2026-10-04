@@ -2960,3 +2960,14 @@ def get_members_by_querry (plan : str | None = None , trainer : str |None = None
         )
 
     return filtered_members 
+
+
+@app.get("/members/{member_id}")
+def get_member_by_id  (member_id :int) : 
+    for member in members : 
+        if member["id"] == member_id : 
+            return member  
+    raise HTTPException ( 
+        status_code= 404 , 
+        detail= f"With id {member_id} not found"
+    )
