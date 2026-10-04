@@ -2883,6 +2883,14 @@ from pydantic import BaseModel
 app  = FastAPI()
 
 
+class PostMembers (BaseModel): 
+    name : str  
+    plan : str  
+    duration : int 
+    fee : float  
+    trainer : str  
+    active : bool
+
 
 members = [
     {
@@ -2971,3 +2979,45 @@ def get_member_by_id  (member_id :int) :
         status_code= 404 , 
         detail= f"With id {member_id} not found"
     )
+
+
+@app.post("/members")
+def post_members (Create : PostMembers) : 
+    if Create.name.strip() == "" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail="Ensure that the name does not be blank"
+        )
+
+    if Create.plan not in ["Monthly", "Quarterly", "Yearly"] : 
+        raise HTTPException ( 
+            status_code= 400, 
+            detail= "Ensure that plan must be Monthly ,Quarterly and Yearly"
+        ) 
+
+    if Create.duration <= 0  : 
+        raise HTTPException ( 
+            status_code= 400  , 
+            detail= "Ensure  the duration must be above 0"
+        )  
+    if Create.fee <=0 : 
+        raise HTTPException ( 
+            status_code=400 , 
+            detail="Ensure the fee must be above 0"
+        )
+
+    if Create.trainer.strip() == "" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Ensure that the  trainer does not be blank"
+        )   
+
+    if members : 
+        new_id  = members[-1]["id"]+1  
+    else : 
+        new_id  = 1    
+
+    create_member = Create.model_dump()
+    create_member["id"]  = new_id  
+    members.append(create_member)
+    return create_member
