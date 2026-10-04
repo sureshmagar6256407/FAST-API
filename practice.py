@@ -2922,3 +2922,14 @@ members = [
         "active": True
     }
 ]
+
+@app.get("/members") 
+def get_members () : 
+    if not members : 
+        raise HTTPException ( 
+            status_code= 404 , 
+            detail= "Members not found"
+        )
+    return members 
+
+    
