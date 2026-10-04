@@ -2644,7 +2644,7 @@ def delete_parcels (parcel_id:int) :
 
 
 
-
+'''
 from  fastapi import FastAPI , HTTPException
 from pydantic import BaseModel  
 
@@ -2874,3 +2874,51 @@ def delete_show(show_id : int) :
         status_code=  404 , 
         detail= f"with id {show_id} not found"
     )
+'''
+
+
+
+from fastapi import FastAPI , HTTPException  
+from pydantic import BaseModel
+app  = FastAPI()
+
+
+
+members = [
+    {
+        "id": 1,
+        "name": "Aashish",
+        "plan": "Monthly",
+        "duration": 1,
+        "fee": 2500,
+        "trainer": "Rahul",
+        "active": True
+    },
+    {
+        "id": 2,
+        "name": "Sneha",
+        "plan": "Quarterly",
+        "duration": 3,
+        "fee": 6500,
+        "trainer": "Priya",
+        "active": True
+    },
+    {
+        "id": 3,
+        "name": "Roshan",
+        "plan": "Yearly",
+        "duration": 12,
+        "fee": 22000,
+        "trainer": "None",
+        "active": False
+    },
+    {
+        "id": 4,
+        "name": "Kabita",
+        "plan": "Monthly",
+        "duration": 1,
+        "fee": 2500,
+        "trainer": "Suman",
+        "active": True
+    }
+]
