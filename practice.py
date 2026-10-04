@@ -2932,4 +2932,31 @@ def get_members () :
         )
     return members 
 
-    
+
+@app.get("/members/filter")
+def get_members_by_querry (plan : str | None = None , trainer : str |None = None , active : bool | None =None) : 
+    filtered_members  = members  
+
+    if plan is not None : 
+        filtered_members  = [ 
+            p for p in filtered_members 
+            if p["plan"].lower()  == plan.lower()
+        ]
+    if trainer is not None : 
+        filtered_members = [
+            t for t in filtered_members  
+            if t["trainer"].lower() == trainer.lower()
+        ]
+    if active is not None : 
+        filtered_members = [
+            a for a in filtered_members  
+            if a["active"] == active 
+        ]
+
+    if not filtered_members : 
+        raise HTTPException ( 
+            status_code= 404 , 
+            detail= "Filtered members not found"
+        )
+
+    return filtered_members 
