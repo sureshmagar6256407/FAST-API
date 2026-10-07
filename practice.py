@@ -2891,6 +2891,13 @@ class PostMembers (BaseModel):
     trainer : str  
     active : bool
 
+class PatchMembers(BaseModel) : 
+    name : str | None = None  
+    plan : str | None = None  
+    duration : int | None = None  
+    fee : float | None = None  
+    trainer : str | None = None  
+    active : bool | None = None
 
 members = [
     {
@@ -3036,3 +3043,5 @@ def put_members(member_id : int , update: PostMembers) :
         status_code = 404 , 
         detail =f"With id {member_id} not found"
     )
+
+@app.patch("/members/{member_id}")
