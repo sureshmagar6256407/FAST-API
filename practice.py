@@ -3021,3 +3021,18 @@ def post_members (Create : PostMembers) :
     create_member["id"]  = new_id  
     members.append(create_member)
     return create_member
+
+
+@app.put("/members/{member_id}")
+def put_members(member_id : int , update: PostMembers) : 
+    for index,member in enumerate(members) : 
+        if member["id"]  == member_id : 
+            update_member = update.model_dump()
+            update_member["id"]  = member_id  
+            members[index]  = update_member 
+            return update_member  
+
+    raise HTTPException( 
+        status_code = 404 , 
+        detail =f"With id {member_id} not found"
+    )
