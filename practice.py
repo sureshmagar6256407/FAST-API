@@ -3044,4 +3044,25 @@ def put_members(member_id : int , update: PostMembers) :
         detail =f"With id {member_id} not found"
     )
 
-@app.patch("/members/{member_id}")
+@app.patch("/members/{member_id}") 
+def patch_members (member_id : int , update: PatchMembers) : 
+    if update.duration is not None and update.duration <= 0 : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Ensure that the duration must be above 0"
+        )
+    if update.fee is not None and update.fee <= 0 : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Ensure that the fee must be above 0"
+        )
+
+    for index , member in enumerate(members) : 
+        if member["id"] == member_id : 
+            update_data = update.model_dump(exclude_unset=True) 
+            members[index].update(update_data)
+            return members[index]
+    raise HTTPException (
+        status_code= 404 ,
+        detail= f"With id {member_id} not found"
+    )
