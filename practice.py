@@ -3065,4 +3065,18 @@ def patch_members (member_id : int , update: PatchMembers) :
     raise HTTPException (
         status_code= 404 ,
         detail= f"With id {member_id} not found"
+    ) 
+
+@app.delete("/members/{member_id}")
+def delete_members(member_id : int) : 
+    for index,member in enumerate(members)  : 
+        if member["id"] == member_id : 
+            del members[index]
+            return { 
+                "message" : f"With id {member_id} deleted" , 
+                "details" : member
+            }
+    raise HTTPException (
+        status_code= 404 , 
+        detail= f"With id {member_id} not found"
     )
