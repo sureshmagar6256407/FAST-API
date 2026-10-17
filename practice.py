@@ -3168,3 +3168,15 @@ def  get_plants_by_querry (category : str | None = None , sunlight  : str | None
             detail= "Not filtered plants found"
         )
     return filtered_plants
+
+
+@app.get("/plants/{plant_id}")
+def get_plant_by_path (plant_id : int) : 
+    for  p in plants : 
+        if p["id"] == plant_id : 
+            return p 
+
+    raise HTTPException ( 
+        status_code= 404 , 
+        detail= f"with id {plant_id} not found"
+    )
