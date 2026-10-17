@@ -3138,3 +3138,33 @@ def get_plants() :
             detail= "Plants not found"
         )
     return plants
+
+
+@app.get("/plants/filter")    
+def  get_plants_by_querry (category : str | None = None , sunlight  : str | None = None , available : bool | None = None) : 
+    filtered_plants = plants  
+
+    if category is not None : 
+        filtered_plants  = [  
+            c for c in filtered_plants  
+            if c["category"].lower() == category.lower()
+        ]
+
+    if sunlight is not None : 
+        filtered_plants = [ 
+            s for s in filtered_plants  
+            if s["sunlight"].lower() == sunlight.lower()
+        ]
+
+    if available is not None : 
+        filtered_plants = [ 
+            a for a in filtered_plants  
+            if a["available"]== available
+        ]
+
+    if not filtered_plants : 
+        raise HTTPException ( 
+            status_code= 404 , 
+            detail= "Not filtered plants found"
+        )
+    return filtered_plants
