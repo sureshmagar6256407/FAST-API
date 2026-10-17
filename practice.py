@@ -3128,3 +3128,13 @@ plants = [
         "available": True
     }
 ]
+
+
+@app.get("/plants")
+def get_plants() : 
+    if not plants : 
+        raise HTTPException ( 
+            status_code= 404 , 
+            detail= "Plants not found"
+        )
+    return plants
