@@ -2878,6 +2878,8 @@ def delete_show(show_id : int) :
 
 
 
+
+''' 
 from fastapi import FastAPI , HTTPException  
 from pydantic import BaseModel
 app  = FastAPI()
@@ -3080,3 +3082,49 @@ def delete_members(member_id : int) :
         status_code= 404 , 
         detail= f"With id {member_id} not found"
     )
+
+'''
+
+from fastapi import FastAPI  , HTTPException  
+from pydantic import BaseModel  
+
+app = FastAPI()
+
+plants = [
+    {
+        "id": 1,
+        "name": "Rose",
+        "category": "Flower",
+        "price": 250,
+        "quantity": 20,
+        "sunlight": "Full",
+        "available": True
+    },
+    {
+        "id": 2,
+        "name": "Aloe Vera",
+        "category": "Medicinal",
+        "price": 180,
+        "quantity": 35,
+        "sunlight": "Partial",
+        "available": True
+    },
+    {
+        "id": 3,
+        "name": "Mango",
+        "category": "Fruit",
+        "price": 500,
+        "quantity": 0,
+        "sunlight": "Full",
+        "available": False
+    },
+    {
+        "id": 4,
+        "name": "Snake Plant",
+        "category": "Indoor",
+        "price": 400,
+        "quantity": 12,
+        "sunlight": "Low",
+        "available": True
+    }
+]
