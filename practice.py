@@ -3088,7 +3088,15 @@ def delete_members(member_id : int) :
 from fastapi import FastAPI  , HTTPException  
 from pydantic import BaseModel  
 
-app = FastAPI()
+app = FastAPI()    
+
+class PostPlants (BaseModel) : 
+    name   : str  
+    category : str  
+    price : float  
+    quantity : int  
+    sunlight:str 
+    available : bool 
 
 plants = [
     {
@@ -3179,4 +3187,46 @@ def get_plant_by_path (plant_id : int) :
     raise HTTPException ( 
         status_code= 404 , 
         detail= f"with id {plant_id} not found"
-    )
+    ) 
+
+@app.post ("/plants")
+def post_plants (postplants : PostPlants) : 
+    if postplants.name.strip() == "" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "please ensures that the name not be empty"
+        )
+
+    if postplants.category not in ["Flower", "Fruit", "Medicinal", "Indoor"] : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "please  make sure category only Flower, Fruit, Medicinal, Indoor"
+        )
+
+    if postplants.price <=0   : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "please the price must be above 0"
+        )
+
+    if postplants.quantity < 0 :  
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail="Qunatity must be positive number"
+        )
+
+    if postplants.sunlight  not in ["Full", "Partial", "Low"] : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "sunlight only contain Full, Partial, Low"
+        )
+
+    if plants : 
+        new_id   = plants[-1]["id"]+1  
+    else : 
+        new_id = 1  
+
+    new_plants  = postplants.model_dump()
+    new_plants["id"] = new_id  
+    plants.append(new_plants)
+    return new_plants  
