@@ -3205,6 +3205,22 @@ def put_plant (plant_id:int , putplant  : PostPlants  ) :
     )
 
 
+@app.delete("/plants/{plant_id}")
+def delete_plant (plant_id : int) : 
+    for index, p   in enumerate (plants)  : 
+        if p["id"] == plant_id : 
+            del plants[index]  
+            return { 
+                "message " : f"with id {plant_id} deleted" , 
+                "details" : p
+            }
+
+    raise HTTPException ( 
+        status_code= 404 , 
+        detail= f"with id {plant_id} not found"
+    )
+    
+
 
 
 
