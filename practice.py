@@ -3098,6 +3098,15 @@ class PostPlants (BaseModel) :
     sunlight:str 
     available : bool 
 
+
+class PatchPlants  (BaseModel) : 
+    name : str  | None = None  
+    category  : str | None = None  
+    price : float | None = None  
+    quantity : int  | None = None  
+    sunlight : str  | None = None  
+    availabl  : bool  | None  = None  
+    
 plants = [
     {
         "id": 1,
