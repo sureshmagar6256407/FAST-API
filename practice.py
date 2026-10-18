@@ -3275,3 +3275,47 @@ def post_plants (postplants : PostPlants) :
     new_plants["id"] = new_id  
     plants.append(new_plants)
     return new_plants  
+
+
+@app.patch("/plants/{plant_id}")
+def patch_plant (plant_id : int   , patchplant : PatchPlants) :   
+    if patchplant.name is not None and patchplant.name.strip() == "" : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "please ensure the name not be empty "
+        )   
+
+    if patchplant.category is not  None and patchplant.category not in ["Flower", "Fruit", "Medicinal", "Indoor"]  : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "category only contain Flower/Fruit/Medicinal "
+        )
+
+    if patchplant.sunlight is not None and patchplant.sunlight  not in ["Full", "Partial", "Low"] : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "sunlight only contain Full/Partial/Low"
+        )     
+
+    if patchplant.price is not None and patchplant.price <= 0 : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Price must be above the  0 "
+        )  
+
+    if patchplant.quantity is not None and patchplant.quantity < 0 : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "the quantity must be positive"
+        )
+    
+    for index , p in enumerate (plants) : 
+        if p["id"]  == plant_id : 
+            change_plant  = patchplant.model_dump(exclude_unset=True)   
+            plants[index].update(change_plant)
+            return plants[index]
+
+    raise HTTPException ( 
+        status_code= 404 , 
+        detail= f"with id {plant_id} not found"
+    )
