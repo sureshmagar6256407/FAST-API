@@ -3182,12 +3182,32 @@ def  get_plants_by_querry (category : str | None = None , sunlight  : str | None
 def get_plant_by_path (plant_id : int) : 
     for  p in plants : 
         if p["id"] == plant_id : 
-            return p 
+            return p   
 
     raise HTTPException ( 
         status_code= 404 , 
         detail= f"with id {plant_id} not found"
     ) 
+
+
+@app.put("/plants/{plant_id}")
+def put_plant (plant_id:int , putplant  : PostPlants  ) : 
+    for  index , p in enumerate (plants) : 
+        if p["id"] == plant_id :  
+            update_member = putplant.model_dump ( )
+            update_member["id"] = plant_id  
+            plants[index] = update_member  
+            return update_member 
+
+    raise HTTPException ( 
+        status_code= 404 , 
+        detail=f"with id {plant_id} not found"
+    )
+
+
+
+
+
 
 @app.post ("/plants")
 def post_plants (postplants : PostPlants) : 
