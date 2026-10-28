@@ -3327,10 +3327,7 @@ def patch_plant (plant_id : int   , patchplant : PatchPlants) :
 
 
 
-from fastapi import FastAPI 
-from pydantic import BaseModel 
 
-app  = FastAPI()
 
 
 parking = {
@@ -3350,7 +3347,3 @@ parking = {
         }
     }
 }
-
-
-
-
