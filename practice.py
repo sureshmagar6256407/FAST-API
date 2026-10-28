@@ -3085,6 +3085,8 @@ def delete_members(member_id : int) :
 
 '''
 
+
+'''
 from fastapi import FastAPI  , HTTPException  
 from pydantic import BaseModel  
 
@@ -3319,3 +3321,32 @@ def patch_plant (plant_id : int   , patchplant : PatchPlants) :
         status_code= 404 , 
         detail= f"with id {plant_id} not found"
     )
+'''
+
+
+
+
+
+from fastapi import FastAPI 
+from pydantic import BaseModel 
+
+app  = FastAPI()
+
+
+parking = {
+    "total_slots": 5,
+    "vehicles": {
+        "BA-1-1234": {
+            "type": "Car",
+            "entry_hour": 9
+        },
+        "BA-2-5678": {
+            "type": "Bike",
+            "entry_hour": 10
+        },
+        "BA-3-9999": {
+            "type": "Car",
+            "entry_hour": 11
+        }
+    }
+}
