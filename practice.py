@@ -3327,10 +3327,7 @@ def patch_plant (plant_id : int   , patchplant : PatchPlants) :
 
 
 
-from fastapi import FastAPI 
-from pydantic import BaseModel 
 
-app  = FastAPI()
 
 
 parking = {
@@ -3350,3 +3347,12 @@ parking = {
         }
     }
 }
+
+
+def  emptySlot(parking) : 
+    total_  = parking.get("total_slots")
+    used_  = len(parking.get("vehicles"))
+    print(used_)
+    empty_slots_  = total_ - used_
+    print(f"empty slots is : {empty_slots_}")
+emptySlot(parking)
