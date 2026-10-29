@@ -3326,8 +3326,6 @@ def patch_plant (plant_id : int   , patchplant : PatchPlants) :
 
 
 
-import time as t
-
 parking = {
     "total_slots": 5,
     "vehicles": {
@@ -3372,7 +3370,6 @@ class Parking:
         bike_rate = 40
         vehicles = self.parking.get("vehicles", {})
         
-        # CORRECTED: Check directly if the vehicle exists instead of using a broken loop
         if vehicle_num not in vehicles:
             raise ValueError(f"Sorry, the vehicle number {vehicle_num} is not parked here.")
             
@@ -3380,33 +3377,52 @@ class Parking:
         v_type = info.get("type")
         entry = info.get("entry_hour")
         
-        duration = current_hours - entry
-        if duration < 0:
+        self.duration = current_hours - entry
+        if self.duration < 0:
             raise ValueError("Current hour cannot be less than entry hour.")
             
         if v_type == "Car":
-            fee = duration * car_rate
+            fee = self.duration * car_rate
         elif v_type == "Bike":
-            fee = duration * bike_rate
+            fee = self.duration * bike_rate
         else:
             fee = 0
             
-        print(f"Vehicle: {vehicle_num} ({v_type}) | Hours: {duration} | Total Fee: Rs. {fee}")
+        return f"Vehicle: {vehicle_num} ({v_type}) | Hours: {self.duration} | Total Fee: Rs. {fee}"
+
+
+    def leaver_parking(self,v_num ,parking_fee) : 
+        vehicles = self.parking.get("vehicles"  , {})
+        
+        if v_num not in vehicles : 
+            raise ValueError (f" vehicles number {v_num} not parking here")   
+
+
+        info  = vehicles[v_num]
+        
+        print(f"vehicles number : {v_num} type : {info['type']} duration : {self.duration} and fee is {parking_fee}")
+
+        del vehicles[v_num]
 
 if __name__ == "__main__":
     p1 = Parking(parking)
     
-    # Check initial empty slots
+
     p1.emptySlot()
     
-    # Test Parking a new vehicle (Uncomment to use)
-    # v_num = input("Enter vehicle number to park: ")
-    # v_type = input("Enter vehicle type (Car/Bike): ")
-    # e_hour = int(input("Enter entry hour: "))
-    # p1.park(v_num, v_type, e_hour)
-    # p1.emptySlot()
+    v_num = input("Enter vehicle number to park: ")
+    v_type = input("Enter vehicle type (Car/Bike): ")
+    e_hour = int(input("Enter entry hour: "))
+    p1.park(v_num, v_type, e_hour)
+    p1.emptySlot()
 
-    # Calculate Fee
     vehicle_num = input("\nEnter the vehicle number to checkout: ")
     current_hours = int(input("Enter the current hour: "))
-    p1.parking_fee(current_hours, vehicle_num)
+    fee= p1.parking_fee(current_hours, vehicle_num)  
+    print(fee)
+
+    leave_VN   = input("Enter the vehicle Number :: ")
+    p1.leaver_parking(leave_VN ,fee )  
+    p1.emptySlot()
+
+
