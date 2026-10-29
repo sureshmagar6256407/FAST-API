@@ -3326,61 +3326,87 @@ def patch_plant (plant_id : int   , patchplant : PatchPlants) :
 
 
 
-
-
-
+import time as t
 
 parking = {
     "total_slots": 5,
     "vehicles": {
-        "BA-1-1234": {
-            "type": "Car",
-            "entry_hour": 9
-        },
-        "BA-2-5678": {
-            "type": "Bike",
-            "entry_hour": 10
-        },
-        "BA-3-9999": {
-            "type": "Car",
-            "entry_hour": 11
-        }
+        "BA-1-1234": {"type": "Car", "entry_hour": 9},
+        "BA-2-5678": {"type": "Bike", "entry_hour": 10},
+        "BA-3-9999": {"type": "Car", "entry_hour": 11}
     }
 }
-class Parking  : 
-    def __init__ (self, parking) : 
-        self.parking = parking
 
-    def  emptySlot(self ) : 
-        self.total_  = self.parking.get("total_slots")
-        self.used_  = len(self.parking.get("vehicles"))
+class Parking:
+    def __init__(self, parking_data):
+        self.parking = parking_data
+        
+    def emptySlot(self):
+        total = self.parking.get("total_slots", 0)
+        used = len(self.parking.get("vehicles", {}))
+        empty_slots = total - used
+        print(f"Empty slots: {empty_slots}")
+        return empty_slots
 
-        empty_slots_  = self.total_ - self.used_
-        print(f"empty slots is : {empty_slots_}")
+    def park(self, vehicle_num, vehicle_type, entry_hour):
+        total = self.parking.get("total_slots", 0)
+        vehicles = self.parking.get("vehicles", {})
+        
+        # Check if parking is full
+        if len(vehicles) >= total:
+            raise ValueError(f"The parking slot is full ({total}), Sorry!")
+            
+        # Check if vehicle is already parked
+        if vehicle_num in vehicles:
+            raise ValueError(f"The vehicle {vehicle_num} is already parked!")
+            
+        # CORRECTED: Add to the existing nested dictionary instead of overwriting it
+        vehicles[vehicle_num] = {
+            "type": vehicle_type,
+            "entry_hour": entry_hour
+        }
+        print(f"Vehicle {vehicle_num} ({vehicle_type}) parked successfully at hour {entry_hour}.")
 
+    def parking_fee(self, current_hours, vehicle_num):
+        car_rate = 100
+        bike_rate = 40
+        vehicles = self.parking.get("vehicles", {})
+        
+        # CORRECTED: Check directly if the vehicle exists instead of using a broken loop
+        if vehicle_num not in vehicles:
+            raise ValueError(f"Sorry, the vehicle number {vehicle_num} is not parked here.")
+            
+        info = vehicles[vehicle_num]
+        v_type = info.get("type")
+        entry = info.get("entry_hour")
+        
+        duration = current_hours - entry
+        if duration < 0:
+            raise ValueError("Current hour cannot be less than entry hour.")
+            
+        if v_type == "Car":
+            fee = duration * car_rate
+        elif v_type == "Bike":
+            fee = duration * bike_rate
+        else:
+            fee = 0
+            
+        print(f"Vehicle: {vehicle_num} ({v_type}) | Hours: {duration} | Total Fee: Rs. {fee}")
+
+if __name__ == "__main__":
+    p1 = Parking(parking)
     
+    # Check initial empty slots
+    p1.emptySlot()
     
-    def park  (self,vehicle_num, vehicle_type, entry_hour) : 
-        if self.total_ == self.used_ : 
-            raise ValueError (f"the parking slot is full {self.total_} , Sorry!")
+    # Test Parking a new vehicle (Uncomment to use)
+    # v_num = input("Enter vehicle number to park: ")
+    # v_type = input("Enter vehicle type (Car/Bike): ")
+    # e_hour = int(input("Enter entry hour: "))
+    # p1.park(v_num, v_type, e_hour)
+    # p1.emptySlot()
 
-        if  vehicle_num in self.parking.get("vehicles") : 
-            raise ValueError (f"the {vehicle_num} is already parking")  
-
-        self.parking  = { 
-            "vehicles" : { 
-                vehicle_num : { 
-                    "type" : vehicle_type  , 
-                    "entry_hour" : entry_hour
-                }
-            }
-        }  
-        print(f"the vehicle_number : {vehicle_num} , vehicle_type : {vehicle_type} and entry_hour : {entry_hour} is now parking")
-if __name__ == "__main__" : 
-    p1  = Parking (parking)  
-    p1.emptySlot()  
-
-    vehicle_num = input("Enter the vehicle number :: ")
-    vehicle_type  = input("Enter the vehicle type :: ")  
-    entry_hour  =  int(input("Enter the entry hour :: "))
-    p1.park(vehicle_num , vehicle_type , entry_hour)
+    # Calculate Fee
+    vehicle_num = input("\nEnter the vehicle number to checkout: ")
+    current_hours = int(input("Enter the current hour: "))
+    p1.parking_fee(current_hours, vehicle_num)
