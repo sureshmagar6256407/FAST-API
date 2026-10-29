@@ -3347,12 +3347,23 @@ parking = {
         }
     }
 }
+class Parking  : 
+    def __init__ (self, parking) : 
+        self.parking = parking
 
+    def  emptySlot(self) : 
+        self.total_  = self.parking.get("total_slots")
+        self.used_  = len(self.parking.get("vehicles"))
 
-def  emptySlot(parking) : 
-    total_  = parking.get("total_slots")
-    used_  = len(parking.get("vehicles"))
-    print(used_)
-    empty_slots_  = total_ - used_
-    print(f"empty slots is : {empty_slots_}")
-emptySlot(parking)
+        empty_slots_  = self.total_ - self.used_
+        print(f"empty slots is : {empty_slots_}")
+
+    
+    
+    def Park  (self) : 
+        pass
+ 
+
+if __name__ == "__main__" : 
+    p1  = Parking (parking)  
+    p1.emptySlot()
