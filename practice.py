@@ -3351,7 +3351,7 @@ class Parking  :
     def __init__ (self, parking) : 
         self.parking = parking
 
-    def  emptySlot(self) : 
+    def  emptySlot(self ) : 
         self.total_  = self.parking.get("total_slots")
         self.used_  = len(self.parking.get("vehicles"))
 
@@ -3360,10 +3360,27 @@ class Parking  :
 
     
     
-    def Park  (self) : 
-        pass
- 
+    def park  (self,vehicle_num, vehicle_type, entry_hour) : 
+        if self.total_ == self.used_ : 
+            raise ValueError (f"the parking slot is full {self.total_} , Sorry!")
 
+        if  vehicle_num in self.parking.get("vehicles") : 
+            raise ValueError (f"the {vehicle_num} is already parking")  
+
+        self.parking  = { 
+            "vehicles" : { 
+                vehicle_num : { 
+                    "type" : vehicle_type  , 
+                    "entry_hour" : entry_hour
+                }
+            }
+        }  
+        print(f"the vehicle_number : {vehicle_num} , vehicle_type : {vehicle_type} and entry_hour : {entry_hour} is now parking")
 if __name__ == "__main__" : 
     p1  = Parking (parking)  
-    p1.emptySlot()
+    p1.emptySlot()  
+
+    vehicle_num = input("Enter the vehicle number :: ")
+    vehicle_type  = input("Enter the vehicle type :: ")  
+    entry_hour  =  int(input("Enter the entry hour :: "))
+    p1.park(vehicle_num , vehicle_type , entry_hour)
