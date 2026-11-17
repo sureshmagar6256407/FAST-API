@@ -3466,6 +3466,7 @@ def fast (hey : UserRegister , background_task : BackgroundTasks) :
 '''
 
 
+''' 
 
 from fastapi import FastAPI
 import asyncio  # async भित्र समय कुर्न र सँगसँगै काम चलाउन यो चाहिन्छ
@@ -3503,3 +3504,22 @@ async def get_city_dashboard(city: str):
         "weather_info": weather,
         "latest_news": news
     }
+''' 
+
+
+
+from  fastapi import FastAPI  
+import asyncio
+
+app = FastAPI ()
+
+async def translate_to_nepali (text:str) :  
+    print (f"text translate hudai xa")
+    await asyncio.sleep(2)
+    return {f"Nepali translation of: {text}"}
+
+@app.get("/translate")
+async def translate (text:str) : 
+    data = await translate_to_nepali (text)
+    return  {"Translate" : data}
+    
