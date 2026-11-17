@@ -3429,7 +3429,7 @@ if __name__ == "__main__":
 
 
 
-
+''' 
 from fastapi import FastAPI , HTTPException , BackgroundTasks 
 from pydantic import BaseModel  
 import asyncio 
@@ -3463,3 +3463,43 @@ def fast (hey : UserRegister , background_task : BackgroundTasks) :
 
     background_task.add_task(log_new_user , hey.user_name , hey.email)
     return {"message": "अकाउन्ट सफलतापूर्वक बन्यो!"}
+'''
+
+
+
+from fastapi import FastAPI
+import asyncio  # async भित्र समय कुर्न र सँगसँगै काम चलाउन यो चाहिन्छ
+
+app = FastAPI()
+
+# १. बाहिरी सर्भरबाट मौसमको डेटा तान्ने नक्कली फङ्सन (मानौँ इन्टरनेटबाट आउन ३ सेकेन्ड लाग्छ)
+async def fetch_weather_from_api(city: str):
+    print(f"🌍 {city} को मौसम इन्टरनेटबाट तानिँदैछ...")
+    await asyncio.sleep(3)  # वेटरले किचेनमा अर्डर दिएर अरू काम गर्न गयो
+    return {"city": city, "temp": "22°C", "condition": "Sunny"}
+
+# २. अर्को बाहिरी सर्भरबाट समाचार तान्ने फङ्सन (यसलाई २ सेकेन्ड लाग्छ)
+async def fetch_news_from_api(city: str):
+    print(f"📰 {city} को समाचार तानिँदैछ...")
+    await asyncio.sleep(2)
+    return [f"{city} मा आज मौसम सफा छ", f"{city} मा प्रविधिको विकास हुँदैछ"]
+
+
+# ३. मुख्य API रुट (यहाँ दुवै काम सँगसँगै चलाउने जादु हेर!)
+@app.get("/dashboard/{city}")
+async def get_city_dashboard(city: str):
+    # तरिका A: एक-एक गरेर पर्खिने (यसलाई ३ + २ = ५ सेकेन्ड लाग्छ)
+    # weather = await fetch_weather_from_api(city)
+    # news = await fetch_news_from_api(city)
+
+    # तरिका B (प्रो लेभल): asyncio.gather() ले दुवै काम एकैपटक सुरु गर्छ! (जम्मा ३ सेकेन्डमै सकिन्छ!)
+    weather, news = await asyncio.gather(
+        fetch_weather_from_api(city),
+        fetch_news_from_api(city)
+    )
+
+    return {
+        "city": city,
+        "weather_info": weather,
+        "latest_news": news
+    }
