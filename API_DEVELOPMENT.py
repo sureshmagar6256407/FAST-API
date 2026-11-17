@@ -3567,7 +3567,7 @@ async def check (email_text :str) :
 '''
 
 
-
+''' 
 import random
 from fastapi import FastAPI  , BackgroundTasks
 from pydantic import BaseModel
@@ -3586,3 +3586,26 @@ def dispatch_sms (phone : str , otp_code : int) :
 def send (post : PostPhoneNumber , background_task : BackgroundTasks) : 
     background_task.add_task(dispatch_sms , post.phone_number , random.randint(1000,9999))
     return {"message" : "OTP पठाइएको छ, कृपया मोबाइल चेक गर्नुहोस्"}
+'''
+
+
+
+from fastapi import FastAPI 
+import asyncio
+import random
+
+
+app = FastAPI()
+
+async def fetch_stock_price (company:str) : 
+    print(f"fetching the stock price......")
+    await asyncio.sleep(3)
+    return random.randint(200,1500)
+
+@app.get("/stock/{company}")
+async def get_company_price(company:str) : 
+    data  = await fetch_stock_price  (company)
+    return {  
+        "company" : company  , 
+        "price_npr" : data
+    }
