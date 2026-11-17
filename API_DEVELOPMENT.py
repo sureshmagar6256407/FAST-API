@@ -3507,7 +3507,7 @@ async def get_city_dashboard(city: str):
 ''' 
 
 
-
+'''
 from  fastapi import FastAPI  
 import asyncio
 
@@ -3522,4 +3522,45 @@ async def translate_to_nepali (text:str) :
 async def translate (text:str) : 
     data = await translate_to_nepali (text)
     return  {"Translate" : data}
+'''
+
+
     
+
+
+
+from fastapi import FastAPI 
+import asyncio
+import random
+app  = FastAPI()
+
+async def check_spam (email_text : str) : 
+    print(f"checking the email")
+    await asyncio.sleep(2)
+    
+    if "win money" in email_text.lower() : 
+        return {"is_spam" : True}
+    return {"is_spam" : False}
+    
+
+async def check_sentiment (email_text : str) : 
+    print (F"cheking the sentiment")
+    await asyncio.sleep(3)  
+
+    s  = ["Positive" ,"Neutral"]
+    return {f"email": email_text  ,
+   "sentiment": random.choice(s)}  
+
+
+    
+@app.post("/analyze-email")
+async def check (email_text :str) : 
+    spam, sentiment  = await asyncio.gather( 
+        check_spam(email_text),
+        check_sentiment(email_text)
+    )
+    return { 
+        "email_text" : email_text , 
+        "spam_checking" : spam ,  
+        "check_sentiment"  : sentiment
+    }
