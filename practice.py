@@ -3325,7 +3325,7 @@ def patch_plant (plant_id : int   , patchplant : PatchPlants) :
 
 
 
-
+''' 
 parking = {
     "total_slots": 5,
     "vehicles": {
@@ -3425,4 +3425,5 @@ if __name__ == "__main__":
     p1.leaver_parking(leave_VN ,fee )  
     p1.emptySlot()
 
+'''
 
