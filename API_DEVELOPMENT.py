@@ -3528,7 +3528,7 @@ async def translate (text:str) :
     
 
 
-
+''' 
 from fastapi import FastAPI 
 import asyncio
 import random
@@ -3564,3 +3564,25 @@ async def check (email_text :str) :
         "spam_checking" : spam ,  
         "check_sentiment"  : sentiment
     }
+'''
+
+
+
+import random
+from fastapi import FastAPI  , BackgroundTasks
+from pydantic import BaseModel
+import time 
+  
+app  = FastAPI()
+
+class PostPhoneNumber (BaseModel) : 
+    phone_number : str 
+
+def dispatch_sms (phone : str , otp_code : int) : 
+    time.sleep(3) 
+    print(f"SMS sent to {phone} with OTP: {otp_code}")
+
+@app.post("/send-otp")
+def send (post : PostPhoneNumber , background_task : BackgroundTasks) : 
+    background_task.add_task(dispatch_sms , post.phone_number , random.randint(1000,9999))
+    return {"message" : "OTP पठाइएको छ, कृपया मोबाइल चेक गर्नुहोस्"}
