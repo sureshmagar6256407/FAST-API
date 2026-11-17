@@ -3589,7 +3589,7 @@ def send (post : PostPhoneNumber , background_task : BackgroundTasks) :
 '''
 
 
-
+'''
 from fastapi import FastAPI 
 import asyncio
 import random
@@ -3609,3 +3609,36 @@ async def get_company_price(company:str) :
         "company" : company  , 
         "price_npr" : data
     }
+'''
+
+
+
+
+import time
+from fastapi  import FastAPI ,HTTPException ,BackgroundTasks  
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class PurchaseItem (BaseModel) : 
+    item_name  : str  
+    quantity : int  
+    customer_email : str  
+
+def generate_invoice (item:PurchaseItem) : 
+    time.sleep(4)
+    with open("sales.txt" , "a") as f : 
+        f.write(f"{item.item_name} - {item.quantity} - {item.customer_email} \n")
+        print(f"{item.item_name} saved on")
+
+@app.post("/checkout")
+def save_item(background_tasks : BackgroundTasks , item : PurchaseItem)  :  
+    if item.quantity < 1 or item.quantity > 10 : 
+        raise HTTPException(
+            status_code= 400 , 
+            detail="१ देखि १० वटा सम्म मात्र अर्डर गर्न मिल्छ"
+        )
+    
+    background_tasks.add_task(generate_invoice ,item)
+    return {"message":"Item succesfully purchased"}
+    
