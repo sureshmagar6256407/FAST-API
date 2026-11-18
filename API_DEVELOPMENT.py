@@ -3613,6 +3613,7 @@ async def get_company_price(company:str) :
 
 
 
+''' 
 
 import time
 from fastapi  import FastAPI ,HTTPException ,BackgroundTasks  
@@ -3642,3 +3643,75 @@ def save_item(background_tasks : BackgroundTasks , item : PurchaseItem)  :
     background_tasks.add_task(generate_invoice ,item)
     return {"message":"Item succesfully purchased"}
     
+''' 
+
+
+''' 
+import random
+from fastapi import FastAPI , BackgroundTasks , HTTPException  
+import time 
+import asyncio 
+from pydantic import BaseModel  
+
+app = FastAPI()
+
+
+class Save(BaseModel) : 
+    text :str  
+
+async def detect_language (text :str) : 
+    print (f"detecting the language........")
+    await asyncio.sleep(2)
+    return random.choice(["English" ,"Nepali"])
+
+
+    
+
+async def count_words (text :str) : 
+    print(f"Counting the world")   
+    await asyncio.sleep(3)
+    return  len(text.split())
+
+def save_analytics(text :str , lang : str , words : int) : 
+    with open ("analytics.txt" ,"a" ,encoding="utf-8") as f : 
+        f.write (f"{text} - {lang} - {words} \n")
+        print(f"{text} saved on analytics.txt")
+
+@app.post("/full-analysis")
+async def full_analysis (save : Save  , background_tasks : BackgroundTasks) : 
+    user_text   = save.text 
+    detect_lang , total_words = await asyncio.gather ( 
+        detect_language(user_text) , 
+        count_words(user_text)
+    )
+    background_tasks.add_task(save_analytics , user_text , detect_lang , total_words)
+
+    return { 
+        "text": user_text,
+        "language": detect_lang,
+        "word_count": total_words
+    
+    }
+'''
+
+
+from fastapi import FastAPI
+import httpx
+
+app = FastAPI()
+
+@app.get("/random-joke")
+async def get_joke():
+    url = "https://official-joke-api.appspot.com/random_joke"
+    
+    # १. Async क्लाइन्ट खोल्ने
+    async with httpx.AsyncClient() as client:
+        # २. बाहिरी लिंकबाट डेटा आउन्जेल पर्खिने (सर्भर जाम नगरी!)
+        response = await client.get(url)
+        # ३. आएको JSON डेटालाई डिक्सनरीमा बदल्ने
+        data = response.json()
+        
+    return {
+        "setup": data["setup"],
+        "punchline": data["punchline"]
+    }
