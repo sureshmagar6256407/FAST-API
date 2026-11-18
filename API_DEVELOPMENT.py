@@ -3644,6 +3644,9 @@ def save_item(background_tasks : BackgroundTasks , item : PurchaseItem)  :
     return {"message":"Item succesfully purchased"}
     
 ''' 
+
+
+''' 
 import random
 from fastapi import FastAPI , BackgroundTasks , HTTPException  
 import time 
@@ -3688,4 +3691,27 @@ async def full_analysis (save : Save  , background_tasks : BackgroundTasks) :
         "language": detect_lang,
         "word_count": total_words
     
+    }
+'''
+
+
+from fastapi import FastAPI
+import httpx
+
+app = FastAPI()
+
+@app.get("/random-joke")
+async def get_joke():
+    url = "https://official-joke-api.appspot.com/random_joke"
+    
+    # १. Async क्लाइन्ट खोल्ने
+    async with httpx.AsyncClient() as client:
+        # २. बाहिरी लिंकबाट डेटा आउन्जेल पर्खिने (सर्भर जाम नगरी!)
+        response = await client.get(url)
+        # ३. आएको JSON डेटालाई डिक्सनरीमा बदल्ने
+        data = response.json()
+        
+    return {
+        "setup": data["setup"],
+        "punchline": data["punchline"]
     }
