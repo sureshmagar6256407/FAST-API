@@ -3695,6 +3695,8 @@ async def full_analysis (save : Save  , background_tasks : BackgroundTasks) :
 '''
 
 
+
+''' 
 from fastapi import FastAPI
 import httpx
 
@@ -3715,3 +3717,38 @@ async def get_joke():
         "setup": data["setup"],
         "punchline": data["punchline"]
     }
+'''
+
+from fastapi import FastAPI , HTTPException , File , UploadFile 
+
+app   = FastAPI()
+
+@app.post("/upload-any")
+async def upload_any (file : UploadFile = File(...)) : 
+    content  = await file.read()
+
+    return { 
+        "File_name" : file.filename , 
+        "File_type" : file.content_type         
+        ,"file_Size": len(content)
+    }
+
+@app.post ("/only-csv")
+async def upload_csv (file : UploadFile = File(...)) : 
+    if not file.filename.endswith(".csv") : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "its support only csv file"
+        )
+    
+    content  = await file.read()
+
+    text_data  = content.decode("utf-8")
+    lines  =text_data.splitlines()
+
+    return { 
+        "message" : "safalta purba save bhayo" , 
+        "total row" : len(lines) , 
+        "data" : lines
+    }
+
