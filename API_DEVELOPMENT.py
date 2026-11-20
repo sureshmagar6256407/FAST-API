@@ -3719,8 +3719,8 @@ async def get_joke():
     }
 '''
 
+''' 
 from fastapi import FastAPI , HTTPException , File , UploadFile 
-
 app   = FastAPI()
 
 @app.post("/upload-any")
@@ -3750,5 +3750,29 @@ async def upload_csv (file : UploadFile = File(...)) :
         "message" : "safalta purba save bhayo" , 
         "total row" : len(lines) , 
         "data" : lines
+    }
+'''
+
+
+
+from fastapi import  FastAPI , File , UploadFile   , HTTPException
+
+app = FastAPI()
+
+
+@app.post("/predict-image")
+async def predict_image (file : UploadFile = File(...)) : 
+    if not file.filename.endswith((".jpg", ".png")) : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= f"{file.filename} not a img or png "
+        )
+    
+    content =  await file.read()
+    return { 
+        "message" : "safalta purba predict bhayo" , 
+        "file_name" : file.filename , 
+        "file_type" : file.content_type , 
+        "phot_size" : len(content)
     }
 
