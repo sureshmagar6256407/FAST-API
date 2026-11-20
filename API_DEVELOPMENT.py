@@ -3779,7 +3779,7 @@ async def predict_image (file : UploadFile = File(...)) :
 
 
 '''
-''' 
+
 from fastapi import FastAPI , File , UploadFile  ,HTTPException 
 app  = FastAPI()
 
@@ -3806,3 +3806,36 @@ async def predict_csv (file : UploadFile = File(...)) :
         "file_name" : file.filename , 
         "file_type" : file.content_type 
     }
+
+''' 
+
+from fastapi import FastAPI ,File , UploadFile , BackgroundTasks ,HTTPException 
+
+
+app  = FastAPI()
+
+def save_audit_log(filename: str, size: int) : 
+    with open ("receipt_logs.txt" , "a") as f : 
+        f.write(f"uploaded: {filename} | size : {size} \n")
+    print(f"photo ko details receipt_logs.txt ma save bhayeko xa")
+
+@app.post("/scan-receipt")
+
+async def get_image (background_task : BackgroundTasks  , file_name : UploadFile = File(...)) : 
+    if not file_name.filename.lower().endswith((".jpg",".jpeg" ,".png")) : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail="please only submit photo"
+        )
+
+    content  = await file_name.read()
+    background_task.add_task(save_audit_log , file_name.filename ,len(content) )
+    return { 
+        "status": "Receipt scanned" , 
+        "file_name" : file_name.filename , 
+        "detected_total" : len(content)
+    }
+
+
+
+    
