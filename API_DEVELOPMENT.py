@@ -3754,7 +3754,7 @@ async def upload_csv (file : UploadFile = File(...)) :
 '''
 
 
-
+''' 
 from fastapi import  FastAPI , File , UploadFile   , HTTPException
 
 app = FastAPI()
@@ -3775,4 +3775,34 @@ async def predict_image (file : UploadFile = File(...)) :
         "file_type" : file.content_type , 
         "phot_size" : len(content)
     }
+'''
 
+
+'''
+''' 
+from fastapi import FastAPI , File , UploadFile  ,HTTPException 
+app  = FastAPI()
+
+
+@app.post("/predict-csv")
+async def predict_csv (file : UploadFile = File(...)) :     
+    if not file.filename.lower().endswith(".csv") : 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= f"{file.filename} not csv file"
+        ) 
+    
+    content = await file.read()
+
+    lines  = content.decode("utf-8").splitlines()
+
+    result  = []
+    for line in lines : 
+        if line.strip(): 
+            num  = float(line)
+            result.append(num * 1500)
+    return { 
+        "prediction" :  result, 
+        "file_name" : file.filename , 
+        "file_type" : file.content_type 
+    }
