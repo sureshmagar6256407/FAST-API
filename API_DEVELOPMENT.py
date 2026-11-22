@@ -3809,6 +3809,9 @@ async def predict_csv (file : UploadFile = File(...)) :
 
 ''' 
 
+
+''' 
+
 from fastapi import FastAPI ,File , UploadFile , BackgroundTasks ,HTTPException 
 
 
@@ -3836,6 +3839,36 @@ async def get_image (background_task : BackgroundTasks  , file_name : UploadFile
         "detected_total" : len(content)
     }
 
+''' 
 
+
+
+
+from fastapi import FastAPI  , HTTPException , File , UploadFile  
+import httpx 
+
+
+app  = FastAPI()
+@app.post("/convert-csv")
+
+async def convert (file : UploadFile = File(...)) : 
+    if not file.filename.endswith(".csv"): 
+        raise HTTPException ( 
+            status_code= 400 , 
+            detail= "Its support only csv file"
+        )
+
+    content    = await file.read()
+    line  = content.decode("utf").splitlines()
+
+    nepali_rupess = []
+    for  i  in line : 
+        if i.strip() : 
+            NPR  = float(i)
+            nepali_rupess.append(NPR)
+
+    async with httpx.AsyncClient(timeout=15.0) as client : 
+        response  = await client.get("https://open.er-api.com/v6/latest/USD](https://open.er-api.com/v6/latest/USD")
+        data =  response.json()
 
     
