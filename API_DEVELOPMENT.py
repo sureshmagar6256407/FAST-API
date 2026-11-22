@@ -3858,17 +3858,25 @@ async def convert (file : UploadFile = File(...)) :
             detail= "Its support only csv file"
         )
 
-    content    = await file.read()
-    line  = content.decode("utf").splitlines()
-
-    nepali_rupess = []
-    for  i  in line : 
-        if i.strip() : 
-            NPR  = float(i)
-            nepali_rupess.append(NPR)
-
     async with httpx.AsyncClient(timeout=15.0) as client : 
         response  = await client.get("https://open.er-api.com/v6/latest/USD](https://open.er-api.com/v6/latest/USD")
         data =  response.json()
+        nepali_rate  = data["rates"]["NPR"]
+
+    content    = await file.read()
+    lines  = content.decode("utf-8").splitlines()
+
+    nepali_rupess = []
+    for  line  in lines : 
+        if line.strip() : 
+            usd_amount = float(line)
+            convereted = round(usd_amount *nepali_rate , 2) 
+            nepali_rupess.append(convereted)
+    return { 
+        "USD_to_npr_rate" : nepali_rate , 
+        "converted_npr_list" : nepali_rupess
+    
+    }
+
 
     
