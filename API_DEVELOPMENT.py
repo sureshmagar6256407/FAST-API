@@ -3880,10 +3880,36 @@ async def convert (file : UploadFile = File(...)) :
 '''
 
 
-from fastapi import FastAPI,File,UploadFile  
+from fastapi import FastAPI,File,UploadFile   , HTTPException
 import httpx
 
 app   = FastAPI()
 
 
-    
+@app.post("/validate-dataset")
+
+
+async def check_model_server(client) : 
+    pass 
+
+async def check_storage_server (client) : 
+    pass 
+
+async def  valid (file : UploadFile= File(...)) : 
+    if not file.filename.endswith(".csv") : 
+        raise HTTPException ( 
+            status_code=400 ,  
+            detail= "ONLY CSV FILE"
+        )
+
+    content  = await file.read()
+    lines  = content.decode("utf-8").splitlines()
+
+    if len(lines)  <= 2 : 
+        raise HTTPException ( 
+            status_code= 400  ,
+            detail= "Dataset too small"
+        )
+
+    async with httpx.AsyncClient (timeout=15.0) as client : 
+        
