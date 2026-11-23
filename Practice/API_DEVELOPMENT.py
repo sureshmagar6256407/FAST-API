@@ -3998,6 +3998,8 @@ def predict_secret(house_area: float):
 '''
 
 
+
+'''
 from fastapi import FastAPI , Security  , HTTPException 
 from fastapi.security import APIKeyHeader  
 
@@ -4012,6 +4014,7 @@ def check_password(user_password : str   = Security(api_key_headers)) :
             status_code=403 , 
             detail="Sorry Password milena"
         )
+    return user_password
 
 @app.get("/public")
 def public_access() : 
@@ -4024,3 +4027,4 @@ def private() :
     return { 
         "message" : "Gopya data bhetiyo"
     }
+'''
