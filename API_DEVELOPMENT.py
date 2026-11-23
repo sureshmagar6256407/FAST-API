@@ -3843,7 +3843,7 @@ async def get_image (background_task : BackgroundTasks  , file_name : UploadFile
 
 
 
-
+''' 
 from fastapi import FastAPI  , HTTPException , File , UploadFile  
 import httpx 
 
@@ -3877,6 +3877,13 @@ async def convert (file : UploadFile = File(...)) :
         "converted_npr_list" : nepali_rupess
     
     }
+'''
+
+
+from fastapi import FastAPI,File,UploadFile  
+import httpx
+
+app   = FastAPI()
 
 
     
