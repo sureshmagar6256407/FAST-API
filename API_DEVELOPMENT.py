@@ -3880,22 +3880,33 @@ async def convert (file : UploadFile = File(...)) :
 '''
 
 
-from fastapi import FastAPI,File,UploadFile   , HTTPException
+import asyncio
+from fastapi import FastAPI,File,UploadFile   , HTTPException , BackgroundTasks
 import httpx
 
 app   = FastAPI()
 
+def notify_admin(filename: str, rows: int , content_type) : 
+    print(f"Admin Alert: {filename} with {rows} rows queued for training. content type : {content_type}")
+
+
+async def check_model_server(client : httpx.AsyncClient) : 
+    print("checking the model server.......")
+    url ="https://httpbin.org/get"
+    response  = await client.get(url)
+    return response.status_code 
+
+async def check_storage_server (client:httpx.AsyncClient) : 
+    print("checking  the storage server")    
+    url   = "https://api.github.com"
+    response  = await client.get(url)
+    return response.status_code
+    
+
+
 
 @app.post("/validate-dataset")
-
-
-async def check_model_server(client) : 
-    pass 
-
-async def check_storage_server (client) : 
-    pass 
-
-async def  valid (file : UploadFile= File(...)) : 
+async def  valid (backgroundtasks : BackgroundTasks , file : UploadFile= File(...) ) : 
     if not file.filename.endswith(".csv") : 
         raise HTTPException ( 
             status_code=400 ,  
@@ -3912,4 +3923,15 @@ async def  valid (file : UploadFile= File(...)) :
         )
 
     async with httpx.AsyncClient (timeout=15.0) as client : 
+        model_server  , storage_server = await asyncio.gather ( 
+            check_model_server(client),
+            check_storage_server(client)
+        )
         
+    backgroundtasks.add_task(notify_admin ,file.filename ,len(lines) , file.content_type)
+    return { 
+        "filename" : file.filename , 
+        "total_rows":len(lines) , 
+        "model_server_status" : model_server , 
+        "storage_server_status" : storage_server
+    }
