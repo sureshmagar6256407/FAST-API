@@ -3938,7 +3938,7 @@ async def  valid (backgroundtasks : BackgroundTasks , file : UploadFile= File(..
 ''' 
 
 
-
+''' 
 #CORS AND API SECURITY KEY 
 
 from fastapi import FastAPI, HTTPException, Security
@@ -3994,4 +3994,33 @@ def predict_secret(house_area: float):
     return {
         "status": "Authorized Access",
         "predicted_price": price
+    }
+'''
+
+
+from fastapi import FastAPI , Security  , HTTPException 
+from fastapi.security import APIKeyHeader  
+
+app  = FastAPI()
+
+api_pwd  = "nepal123"
+api_key_headers = APIKeyHeader(name="X-API-Key")
+
+def check_password(user_password : str   = Security(api_key_headers)) : 
+    if user_password != api_pwd : 
+        raise HTTPException ( 
+            status_code=403 , 
+            detail="Sorry Password milena"
+        )
+
+@app.get("/public")
+def public_access() : 
+    return {
+        "message" : "sabai lai khulla"
+    }
+
+@app.get("/private",dependencies=[Security(check_password)])
+def private() : 
+    return { 
+        "message" : "Gopya data bhetiyo"
     }
