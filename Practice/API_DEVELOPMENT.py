@@ -4030,7 +4030,7 @@ def private() :
 '''
 
 
-
+''' 
 
 #(Async / asyncio.gather + httpx)
 from fastapi import FastAPI  
@@ -4067,5 +4067,42 @@ async def live_dashboard () :
         "kathmandu_temp" : ktm_weather
     }
 
+'''
 
 
+
+
+
+#(BackgroundTasks):
+from fastapi import FastAPI , BackgroundTasks  , HTTPException
+from pydantic import BaseModel  
+import time
+
+class Feedback(BaseModel) : 
+    username  : str  
+    rating : int  
+    comment : str 
+
+
+app = FastAPI()
+
+
+def write_feedback_to_file(username, rating, comment) :   
+    time.sleep(4)
+    with open ("feedback.txt" ,"a") as f : 
+        f.write(f"username : {username} - rating : {rating} - comment : {comment} \n") 
+    print("feedback save bhayesakeo ")
+
+@app.post("/submit-feedback")
+def user_feedback(feedback : Feedback , backgroundtasks : BackgroundTasks) : 
+    if feedback.rating > 5 or  feedback.rating < 1 : 
+        raise HTTPException (
+            status_code= 400 ,
+            detail= "rating must be between 5 to 1")  
+
+    backgroundtasks.add_task(write_feedback_to_file , feedback.username , feedback.rating , feedback.comment)
+    return { 
+        "message" : "Feedback received, thank you!"
+    }
+
+    
