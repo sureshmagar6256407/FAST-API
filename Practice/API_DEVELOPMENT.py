@@ -4028,3 +4028,44 @@ def private() :
         "message" : "Gopya data bhetiyo"
     }
 '''
+
+
+
+
+#(Async / asyncio.gather + httpx)
+from fastapi import FastAPI  
+import httpx  
+import asyncio 
+
+app = FastAPI()
+
+
+async def  get_eth_price(client : httpx.AsyncClient) : 
+    url  = "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"  
+    
+    response  = await client.get(url)
+    data = response.json()
+    return data["ethereum"]["usd"]
+
+async def get_ktm_weather(client : httpx.AsyncClient): 
+    url  ="https://api.open-meteo.com/v1/forecast?latitude=27.7172&longitude=85.3240&current_weather=true"
+
+    response  = await client.get(url)
+    data = response.json()
+    return data["current_weather"]["temperature"]
+
+@app.get("/live-dashboard")
+async def live_dashboard () : 
+    async with httpx.AsyncClient(timeout=15.0) as client :   
+        eth_price , ktm_weather  = await asyncio.gather ( 
+            get_eth_price(client) , 
+            get_ktm_weather (client)
+        )
+    
+    return { 
+        "etherum_usd" : eth_price  , 
+        "kathmandu_temp" : ktm_weather
+    }
+
+
+
