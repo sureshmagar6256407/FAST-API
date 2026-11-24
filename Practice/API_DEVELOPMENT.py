@@ -4072,7 +4072,7 @@ async def live_dashboard () :
 
 
 
-
+''' 
 #(BackgroundTasks):
 from fastapi import FastAPI , BackgroundTasks  , HTTPException
 from pydantic import BaseModel  
@@ -4105,4 +4105,41 @@ def user_feedback(feedback : Feedback , backgroundtasks : BackgroundTasks) :
         "message" : "Feedback received, thank you!"
     }
 
-    
+'''
+
+
+
+#(UploadFile + File):
+from statistics import mean
+from fastapi import FastAPI, HTTPException, File, UploadFile
+
+app = FastAPI()
+
+@app.post("/analyze-marks")
+async def get_csv(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith(".csv"):
+        raise HTTPException(
+            status_code=400,
+            detail="It supports only csv file"
+        )
+
+    content = await file.read()
+    lines = content.decode("utf-8").splitlines()
+
+    float_number = []
+    for num in lines:
+        if num.strip():
+            n = float(num)
+            float_number.append(n)
+
+    if len(float_number) < 1:
+        raise HTTPException(
+            status_code=400,
+            detail="Sorry the list is empty"
+        )
+
+    return {
+        "total_students": len(float_number),
+        "average_marks": round(mean(float_number), 2),
+        "highest_mark": max(float_number)  
+    }
