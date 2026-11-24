@@ -38,5 +38,5 @@ async def upload_csv_file(file: UploadFile = File(...)):
     return {
         "message": "CSV फाइल सफलतापूर्वक पढियो!",
         "total_rows": len(lines),
-        "data": lines
+        "data": lines  ,
     }
