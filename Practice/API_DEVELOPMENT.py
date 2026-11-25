@@ -4147,6 +4147,7 @@ async def get_csv(file: UploadFile = File(...)):
 
 
 
+''' 
 #(CORSMiddleware + APIKeyHeader)
 from fastapi import FastAPI ,Security  , HTTPException
 from fastapi.security import APIKeyHeader 
@@ -4185,3 +4186,33 @@ def private (a: int , b : int) :
         "sum" : a + b , 
         "product" : a * b 
     }
+'''
+
+
+from fastapi import FastAPI , HTTPException, Security , UploadFile  , File , security   
+from fastapi.security import  APIKeyHeader  
+from fastapi.middleware.cors import CORSMiddleware
+import httpx 
+import asyncio
+
+app = FastAPI()
+
+app.add_middleware( 
+    CORSMiddleware , 
+    allow_origins= ["http://localhost:5173"]  ,   
+    allow_methods =["*"] ,
+    allow_headers = ["*"]
+)
+
+api_pw  = "hr-secret-999"
+api_key_header  = APIKeyHeader ("X-API-Key")
+
+def check_password(user_pw  : str = Security(api_key_header)) : 
+    if user_pw != api_pw : 
+        raise HTTPException ( 
+            status_code= 403 , 
+            detail="the password is wrong"
+        )
+    return user_pw
+
+    
