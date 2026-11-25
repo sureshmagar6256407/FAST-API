@@ -4166,4 +4166,22 @@ verify_key = "ml-deploy-2026"
 
 def check_password(User_pw : str  = Security(api_key_headers)) : 
     if User_pw != verify_key : 
-        
+        raise HTTPException ( 
+            status_code=403 , 
+            detail="The password is wrong"
+        )
+    return User_pw  
+
+
+@app.get("/staus")
+def free() : 
+    return { 
+        "server" : "online"
+    }
+
+@app.post("/secret-calc" , dependencies= [Security(check_password)])  
+def private (a: int , b : int) : 
+    return { 
+        "sum" : a + b , 
+        "product" : a * b 
+    }
