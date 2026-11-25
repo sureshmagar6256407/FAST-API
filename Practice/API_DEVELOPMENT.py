@@ -4108,7 +4108,7 @@ def user_feedback(feedback : Feedback , backgroundtasks : BackgroundTasks) :
 '''
 
 
-
+''' 
 #(UploadFile + File):
 from statistics import mean
 from fastapi import FastAPI, HTTPException, File, UploadFile
@@ -4143,3 +4143,27 @@ async def get_csv(file: UploadFile = File(...)):
         "average_marks": round(mean(float_number), 2),
         "highest_mark": max(float_number)  
     }
+'''
+
+
+
+#(CORSMiddleware + APIKeyHeader)
+from fastapi import FastAPI ,Security  , HTTPException
+from fastapi.security import APIKeyHeader 
+from fastapi.middleware.cors import CORSMiddleware  
+
+app = FastAPI()
+
+app.add_middleware (
+    CORSMiddleware , 
+    allow_origins  = ["http://localhost:3000", "http://localhost:5173"] , 
+    allow_methods  = ["*"] , 
+    allow_headers = ["*"]
+)
+
+api_key_headers = APIKeyHeader(name = "X-Secret-Key")
+verify_key = "ml-deploy-2026"
+
+def check_password(User_pw : str  = Security(api_key_headers)) : 
+    if User_pw != verify_key : 
+        
