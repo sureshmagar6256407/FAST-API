@@ -4189,30 +4189,75 @@ def private (a: int , b : int) :
 '''
 
 
-from fastapi import FastAPI , HTTPException, Security , UploadFile  , File , security   
-from fastapi.security import  APIKeyHeader  
+
+from fastapi import FastAPI, HTTPException, Security, UploadFile, File, BackgroundTasks
+from fastapi.security import APIKeyHeader
 from fastapi.middleware.cors import CORSMiddleware
-import httpx 
-import asyncio
+import httpx
 
 app = FastAPI()
 
-app.add_middleware( 
-    CORSMiddleware , 
-    allow_origins= ["http://localhost:5173"]  ,   
-    allow_methods =["*"] ,
-    allow_headers = ["*"]
+# १. CORS सेटअप
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-api_pw  = "hr-secret-999"
-api_key_header  = APIKeyHeader ("X-API-Key")
+# २. API Key सुरक्षा गार्ड
+api_pw = "hr-secret-999"
+api_key_header = APIKeyHeader(name="X-API-Key")
 
-def check_password(user_pw  : str = Security(api_key_header)) : 
-    if user_pw != api_pw : 
-        raise HTTPException ( 
-            status_code= 403 , 
-            detail="the password is wrong"
+def check_password(user_pw: str = Security(api_key_header)):
+    if user_pw != api_pw:
+        raise HTTPException(
+            status_code=403,
+            detail="The password is wrong"
         )
     return user_pw
 
-    
+# ३. Background Task फङ्सन
+def log_hr_request(filename: str, count: int):
+    with open("hr_audit.log", "a") as f:
+        f.write(f"Processed {filename} for {count} employees\n")
+    print("Data haru hr_audit.log ma save bhayesakeko")
+
+# ४. मुख्य सुरक्षित रुट
+@app.post("/predict-salaries", dependencies=[Security(check_password)])
+async def protected_routes(background_tasks: BackgroundTasks, file: UploadFile = File(...)):
+    if not file.filename.lower().endswith(".csv"):
+        raise HTTPException(
+            status_code=400,
+            detail="Only CSV file"
+        )
+
+    # बाहिरी API बाट लाइभ NPR रेट तान्ने
+    url = "https://open.er-api.com/v6/latest/USD"
+    async with httpx.AsyncClient(timeout=15.0) as client:
+        response = await client.get(url)
+        data = response.json()
+        nepali_rate = data["rates"]["NPR"]
+
+    # CSV फाइल पढ्ने र अनुभव अनुसार तलब निकाल्ने
+    content = await file.read()
+    lines = content.decode("utf-8").splitlines()
+
+    nepali_rupees = []
+    for i in lines:
+        if i.strip():
+            exp = float(i)
+            usd_salary = 500 + (exp * 200)
+            converted = round(usd_salary * nepali_rate, 2)
+            nepali_rupees.append(converted)
+
+    # पछाडि लग फाइलमा सेभ गर्ने काम थप्ने
+    total_count = len(nepali_rupees)
+    background_tasks.add_task(log_hr_request, file.filename, total_count)
+
+    # युजरलाई नतिजा पठाउने
+    return {
+        "exchange_rate_npr": nepali_rate,
+        "total_employees": total_count,
+        "salaries_npr": nepali_rupees
+    }
